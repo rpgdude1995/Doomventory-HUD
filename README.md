@@ -8,7 +8,7 @@
 
 ## About
 
-Doomventory hud is a graphical interface for UZDoom to manage inventory items and weapons. It is generic and compatable with many other mods although compatability is not guaranteed. The interface uses primarilly mouse controls. The interface is also customizable with some presets.
+Doomventory hud is a graphical interface for UZDoom to manage inventory items and weapons. It is generic and compatable with many other mods although compatability is not guaranteed. The interface uses primarilly mouse controls. The interface is also customizable with some presets. Doomventory hud is a continuation of [GZDoom GUI](https://github.com/rpgdude1995/GZDoomGUI)
 
 ![Doomventory demo](doomventory-hud-demo.gif)
 
