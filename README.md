@@ -10,9 +10,7 @@
 
 Doomventory hud is a graphical interface for UZDoom to manage inventory items and weapons. It is generic and compatable with many other mods although compatability is not guaranteed. The interface uses primarilly mouse controls. The interface is also customizable with some presets.
 
-![zb demo](doomventory-hud-demo.gif)
-
-zerobrew applies [uv](https://github.com/astral-sh/uv)'s model to Mac packages. Packages live in a content-addressable store (by sha256), so reinstalls are instant. Downloads, extraction, and linking run in parallel with aggressive HTTP caching. It pulls from Homebrew's CDN, so you can    swap `brew` for `zb` with your existing commands. 
+![Doomventory demo](doomventory-hud-demo.gif)
 
 ##  Using `Doomventory Hud`
 
