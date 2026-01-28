@@ -12,7 +12,7 @@ Doomventory hud is a graphical interface for UZDoom to manage inventory items an
 
 ![Doomventory demo](doomventory-hud-demo.gif)
 
-##  Using `Doomventory Hud`
+##  Using Doomventory Hud
 
 Simply downlaod the .pk3 file from the releases and launch with UZDoom.
 
