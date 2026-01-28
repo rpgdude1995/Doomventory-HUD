@@ -1,0 +1,97 @@
+nosave bool GZGUI_ToggleUI = FALSE;
+nosave int GZGUI_preset = 1;
+nosave bool GZGUI_Custom = FALSE;
+nosave bool GZGUI_EN_Background = TRUE;
+nosave bool GZGUI_EN_BlankCells = TRUE;
+nosave int GZGUI_SEL_Bag = 0;
+nosave int GZGUI_Cursor_Size = 32;
+//inventory
+nosave int GZGUI_P_InvEn = 1;
+nosave int GZGUI_P_InvEnAV = 0;
+nosave int GZGUI_P_InvCol = 5;
+nosave int GZGUI_P_InvRow = 3;
+nosave int GZGUI_P_InvX = 300;
+nosave int GZGUI_P_InvY = 200;
+nosave int GZGUI_P_InvOrder = 1;
+nosave int GZGUI_P_InvCellX = 100;
+nosave int GZGUI_P_InvCellY = 75;
+nosave int GZGUI_P_InvMargin = 15;
+//weapons
+nosave int GZGUI_P_WeapEn = 1;
+nosave int GZGUI_P_WeapEnAV = 0;
+nosave int GZGUI_P_WeapCol = 4;
+nosave int GZGUI_P_WeapRow = 3;
+nosave int GZGUI_P_WeapX = 200;
+nosave int GZGUI_P_WeapY = 400;
+nosave int GZGUI_P_WeapOrder = 1;
+nosave int GZGUI_P_WeapCellX = 100;
+nosave int GZGUI_P_WeapCellY = 75;
+nosave int GZGUI_P_WeapMargin = 15;
+//weapon slots
+nosave int GZGUI_P_SlotEn = 1;
+nosave int GZGUI_P_SlotEnAV = 0;
+nosave int GZGUI_P_SlotCol = 7;
+nosave int GZGUI_P_SlotRow = 2;
+nosave int GZGUI_P_SlotX = 300;
+nosave int GZGUI_P_SlotY = 200;
+nosave int GZGUI_P_SlotOrder = 1;
+nosave int GZGUI_P_SlotCellX = 100;
+nosave int GZGUI_P_SlotCellY = 75;
+nosave int GZGUI_P_SlotMargin = 15;
+//combined
+nosave int GZGUI_P_ComboEn = 0;
+nosave int GZGUI_P_ComboEnAV = 0;
+nosave int GZGUI_P_ComboCol = 0;
+nosave int GZGUI_P_ComboRow = 0;
+nosave int GZGUI_P_ComboX = 0;
+nosave int GZGUI_P_ComboY = 0;
+nosave int GZGUI_P_ComboOrder = 0;
+nosave int GZGUI_P_ComboCellX = 20;
+nosave int GZGUI_P_ComboCellY = 20;
+nosave int GZGUI_P_ComboMargin = 20;
+
+//nosave float GZGUI_y = 1.0;
+
+server int GZGUI_P_Weapon_Slots_0 = 98;
+server int GZGUI_P_Weapon_Slots_1 = 98;
+server int GZGUI_P_Weapon_Slots_2 = 98;
+server int GZGUI_P_Weapon_Slots_3 = 98;
+server int GZGUI_P_Weapon_Slots_4 = 98;
+server int GZGUI_P_Weapon_Slots_5 = 98;
+server int GZGUI_P_Weapon_Slots_6 = 98;
+server int GZGUI_P_Weapon_Slots_7 = 98;
+server int GZGUI_P_Weapon_Slots_8 = 98;
+server int GZGUI_P_Weapon_Slots_9 = 98;
+server int GZGUI_P_Weapon_Slots_10 = 98;
+server int GZGUI_P_Weapon_Slots_11 = 98;
+server int GZGUI_P_Weapon_Slots_12 = 98;
+server int GZGUI_P_Weapon_Slots_13 = 98;
+server int GZGUI_P_Weapon_Slots_14 = 98;
+server int GZGUI_P_Weapon_Slots_15 = 98;
+server int GZGUI_P_Weapon_Slots_16 = 98;
+server int GZGUI_P_Weapon_Slots_17 = 98;
+server int GZGUI_P_Weapon_Slots_18 = 98;
+server int GZGUI_P_Weapon_Slots_19 = 98;
+
+
+server string GZGUI_P_Weapon_Slot_Name_0 = "";
+server string GZGUI_P_Weapon_Slot_Name_1 = "";
+server string GZGUI_P_Weapon_Slot_Name_2 = "";
+server string GZGUI_P_Weapon_Slot_Name_3 = "";
+server string GZGUI_P_Weapon_Slot_Name_4 = "";
+server string GZGUI_P_Weapon_Slot_Name_5 = "";
+server string GZGUI_P_Weapon_Slot_Name_6 = "";
+server string GZGUI_P_Weapon_Slot_Name_7 = "";
+server string GZGUI_P_Weapon_Slot_Name_8 = "";
+server string GZGUI_P_Weapon_Slot_Name_9 = "";
+server string GZGUI_P_Weapon_Slot_Name_10 = "";
+server string GZGUI_P_Weapon_Slot_Name_11 = "";
+server string GZGUI_P_Weapon_Slot_Name_12 = "";
+server string GZGUI_P_Weapon_Slot_Name_13 = "";
+server string GZGUI_P_Weapon_Slot_Name_14 = "";
+server string GZGUI_P_Weapon_Slot_Name_15 = "";
+server string GZGUI_P_Weapon_Slot_Name_16 = "";
+server string GZGUI_P_Weapon_Slot_Name_17 = "";
+server string GZGUI_P_Weapon_Slot_Name_18 = "";
+server string GZGUI_P_Weapon_Slot_Name_19 = "";
+

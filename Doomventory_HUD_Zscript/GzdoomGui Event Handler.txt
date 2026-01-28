@@ -1,0 +1,3055 @@
+//current issues
+
+//easy issues
+
+//medium issues
+//fix input issues (mouse buttons functions universal)
+
+//sprite scaleing is glitchy
+//slot cache and weapon cache numbers mismatch
+//make combined cache/stack
+
+//Hard issues
+//scroll weapons
+//fixed inventory icon problem now other interactions need to be fixed
+//fix pause feature
+ 
+class GuiHandler : EventHandler
+{
+
+const INIT_TICK = 1;
+
+	//Textures
+	ui TextureID mag;
+	ui TextureID batt;
+	ui TextureID invitem;
+	ui TextureID cursor;
+	ui TextureID HoverCursor;
+	ui TextureID HoldCursor;
+	ui TextureID invicon;
+	ui TextureID invleft;
+	ui TextureID invright;
+	ui TextureID inactive;
+	ui TextureID toggled;
+	ui TextureID active;
+	ui TextureID Background;
+	ui TextureID Background2;
+	ui TextureID Background3;
+	ui TextureID Background4;
+	//Engien nececitys
+	ui bool ToggleUI;
+	ui playerpawn p;
+	ui playerinfo pi;
+	ui bool initialized;
+	//Coordinates
+	ui double x;
+	ui double y;	
+	ui double xHold;
+	ui double yHold;
+	//resolution
+	ui double Hres;
+	ui double Vres;
+	//dropdown menu 
+	ui bool contextToggle;
+	ui bool hover;
+	ui bool WeapHover;
+	ui bool SlotHover;
+	ui bool CacheWeapon;
+	ui bool CacheSlot;
+	ui bool Dragging;
+	ui bool hold;
+	ui bool use;
+	ui bool drop;
+	ui bool equip;
+	ui bool weapdrop;
+	ui int hoverAreaX;
+	ui int hoverAreaY;
+	ui bool weapinvDropDownHold;
+	ui bool invDropDownHold;
+	//ui bool CellHover;
+	//Inventory Cacheing
+	ui inventory invCache[99];
+	ui TextureID iconCache[99];
+	ui inventory WeapCache[99];
+	ui TextureID IconWeapCache[99];
+	ui inventory SlotCache[99];
+	ui int slots[99];
+	//Inventory Management 
+	ui int sel;
+	ui int Dropsel;
+	ui int WeapSel;
+	ui int SlotSel;
+	ui int holdSel;
+	ui int DragSel;
+	ui int invcount;
+	ui int location;			
+	ui int activeWeaponSlot;
+	ui int clickDelay;
+	ui Bool DoubleClick;
+	ui bool BreakDoubleClick;
+	
+	//cvar Variables
+	//ui transient CVar cToggleUI;
+	ui transient CVar cPreset;
+	ui transient CVar cCustom;
+	ui transient CVar cEN_Background;
+	ui transient CVar cEN_BlankCells;
+	ui transient CVar cSEL_Bag;
+	ui transient CVar cCursor_Size;
+	//inventory
+	ui transient CVar cP_InvEn;
+	ui transient CVar cP_InvEnAV;
+	ui transient CVar cP_InvCol;
+	ui transient CVar cP_InvRow;
+	ui transient CVar cP_InvX;
+	ui transient CVar cP_InvY;
+	ui transient CVar cP_InvOrder;
+	ui transient CVar cP_InvCellX;
+	ui transient CVar cP_InvCellY;
+	ui transient CVar cP_InvMargin;
+	//weapons
+	ui transient CVar cP_WeapEn;
+	ui transient CVar cP_WeapEnAV;
+	ui transient CVar cP_WeapCol;
+	ui transient CVar cP_WeapRow;
+	ui transient CVar cP_WeapX;
+	ui transient CVar cP_WeapY;
+	ui transient CVar cP_WeapOrder;
+	ui transient CVar cP_WeapCellX;
+	ui transient CVar cP_WeapCellY;
+	ui transient CVar cP_WeapMargin;
+	//weapon slots
+	ui transient CVar cP_SlotEn;
+	ui transient CVar cP_SlotEnAV;
+	ui transient CVar cP_SlotCol;
+	ui transient CVar cP_SlotRow;
+	ui transient CVar cP_SlotX;
+	ui transient CVar cP_SlotY;
+	ui transient CVar cP_SlotOrder;
+	ui transient CVar cP_SlotCellX;
+	ui transient CVar cP_SlotCellY;
+	ui transient CVar cP_SlotMargin;
+	//slot data
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_0;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_1;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_2;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_3;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_4;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_5;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_6;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_7;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_8;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_9;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_10;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_11;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_12;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_13;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_14;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_15;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_16;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_17;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_18;
+	ui transient CVar cP_GZGUI_P_Weapon_Slots_19;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_0;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_1;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_2;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_3;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_4;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_5;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_6;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_7;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_8;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_9;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_10;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_11;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_12;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_13;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_14;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_15;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_16;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_17;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_18;
+	ui transient CVar cP_GZGUI_P_Weapon_Slot_Name_19;
+	//combined
+	ui transient CVar cP_ComboEn;
+	ui transient CVar cP_ComboEnAV;	
+	ui transient CVar cP_ComboCol;
+	ui transient CVar cP_ComboRow;
+	ui transient CVar cP_ComboX;
+	ui transient CVar cP_ComboY;
+	ui transient CVar cP_ComboOrder;
+	ui transient CVar cP_ComboCellX;
+	ui transient CVar cP_ComboCellY;
+	ui transient CVar cP_ComboMargin;
+	
+	//preset Variables
+	ui int preset;
+	ui bool Custom;
+	ui bool EN_Background;
+	ui bool EN_BlankCells;
+	ui int SEL_Bag;
+	ui int Cursor_size;
+	//inventory
+	ui int P_InvEn;
+	ui int P_InvEnAV;
+	ui int P_InvCol;
+	ui int P_InvRow;
+	ui int P_InvX;
+	ui int P_InvY;
+	ui int P_InvOrder;
+	ui int P_InvCellX;
+	ui int P_InvCellY;
+	ui int P_InvMargin;
+	//weapons
+	ui int P_WeapEn;
+	ui int P_WeapEnAV;
+	ui int P_WeapCol;
+	ui int P_WeapRow;
+	ui int P_WeapX;
+	ui int P_WeapY;
+	ui int P_WeapOrder;
+	ui int P_WeapCellX;
+	ui int P_WeapCellY;
+	ui int P_WeapMargin;
+	//Weapon slots
+	ui int P_SlotEn;
+	ui int P_SlotEnAV;
+	ui int P_SlotCol;
+	ui int P_SlotRow;
+	ui int P_SlotX;
+	ui int P_SlotY;
+	ui int P_SlotOrder;
+	ui int P_SlotCellX;
+	ui int P_SlotCellY;
+	ui int P_SlotMargin;
+	//slot data
+/*	ui int P_GZGUI_P_Weapon_Slots_0;
+	ui int P_GZGUI_P_Weapon_Slots_1;
+	ui int P_GZGUI_P_Weapon_Slots_2;
+	ui int P_GZGUI_P_Weapon_Slots_3;
+	ui int P_GZGUI_P_Weapon_Slots_4;
+	ui int P_GZGUI_P_Weapon_Slots_5;
+	ui int P_GZGUI_P_Weapon_Slots_6;
+	ui int P_GZGUI_P_Weapon_Slots_7;
+	ui int P_GZGUI_P_Weapon_Slots_8;
+	ui int P_GZGUI_P_Weapon_Slots_9;
+	ui int P_GZGUI_P_Weapon_Slots_10;
+	ui int P_GZGUI_P_Weapon_Slots_11;
+	ui int P_GZGUI_P_Weapon_Slots_12;
+	ui int P_GZGUI_P_Weapon_Slots_13;
+	ui int P_GZGUI_P_Weapon_Slots_14;
+	ui int P_GZGUI_P_Weapon_Slots_15;
+	ui int P_GZGUI_P_Weapon_Slots_16;
+	ui int P_GZGUI_P_Weapon_Slots_17;
+	ui int P_GZGUI_P_Weapon_Slots_18;
+	ui int P_GZGUI_P_Weapon_Slots_19;*/
+	ui String P_GZGUI_P_Weapon_Slot_Name_0;
+	ui String P_GZGUI_P_Weapon_Slot_Name_1;
+	ui String P_GZGUI_P_Weapon_Slot_Name_2;
+	ui String P_GZGUI_P_Weapon_Slot_Name_3;
+	ui String P_GZGUI_P_Weapon_Slot_Name_4;
+	ui String P_GZGUI_P_Weapon_Slot_Name_5;
+	ui String P_GZGUI_P_Weapon_Slot_Name_6;
+	ui String P_GZGUI_P_Weapon_Slot_Name_7;
+	ui String P_GZGUI_P_Weapon_Slot_Name_8;
+	ui String P_GZGUI_P_Weapon_Slot_Name_9;
+	ui String P_GZGUI_P_Weapon_Slot_Name_10;
+	ui String P_GZGUI_P_Weapon_Slot_Name_11;
+	ui String P_GZGUI_P_Weapon_Slot_Name_12;
+	ui String P_GZGUI_P_Weapon_Slot_Name_13;
+	ui String P_GZGUI_P_Weapon_Slot_Name_14;
+	ui String P_GZGUI_P_Weapon_Slot_Name_15;
+	ui String P_GZGUI_P_Weapon_Slot_Name_16;
+	ui String P_GZGUI_P_Weapon_Slot_Name_17;
+	ui String P_GZGUI_P_Weapon_Slot_Name_18;
+	ui String P_GZGUI_P_Weapon_Slot_Name_19;
+	//combined
+	ui int P_ComboEn;
+	ui int P_ComboEnAV;
+	ui int P_ComboCol;
+	ui int P_ComboRow;
+	ui int P_ComboX;
+	ui int P_ComboY;
+	ui int P_ComboOrder;
+	ui int P_ComboCellX;
+	ui int P_ComboCellY;
+	ui int P_ComboMargin;
+	
+	ui void Init()
+	{
+			//needed for ui to read form player context
+			//without results in vm exicution error
+			ToggleUI = False;
+			pi = players[consoleplayer];
+			
+			p = playerpawn(pi.mo);
+			hover = false;
+			slothover = false;
+		//	Cellhover = false;
+			hold = false;
+			Dragging = False;
+			weapinvDropDownHold = false;
+			invDropDownHold =false;
+			contextToggle = False;
+			x = 0;
+			y = 0;
+			Vres = Screen.GetWidth();
+			Hres = Screen.GetHeight();
+			initialized = TRUE;
+			inactive = texman.checkfortexture("inactive",0);
+			toggled = texman.checkfortexture("toggled",0);
+			active = texman.checkfortexture("invsel",0);
+			Background = texman.checkfortexture("Bag",0);
+			Background2 = texman.checkfortexture("Bag2",0);
+			Background3 = texman.checkfortexture("Bag3",0);
+			Background4 = texman.checkfortexture("Bag4",0);
+			//Cursor = texman.checkfortexture("Arrow",0);
+			Cursor = texman.checkfortexture("doomcurs.png",0);
+			HoverCursor = texman.checkfortexture("Finger",0);
+			HoldCursor = texman.checkfortexture("Hand",0);		
+			FillSlotCache();
+
+					
+		/*		
+			//this replicates default bindings for doom
+			slots[0] = 0; //fists
+			slots[1] = 1; //chainsaw
+			slots[2] = 2; //pistol
+			slots[3] = 17; //no default
+			slots[4] = 3; //shotgun
+			slots[5] = 4; //super shotgun
+			slots[6] = 5; //chaingun
+			slots[7] = 17; //no default
+			slots[8] = 6; //rocket launcher
+			slots[9] = 17; //no default
+			slots[10] = 7; //plasma gun
+			slots[11] = 17; //no default 
+			slots[12] = 8;	//BFG9000
+			slots[13] = 17;	//no default 
+			slots[14] = 17; //no default 
+			slots[15] = 17; //no default 
+			slots[16] = 17; //no default 
+			slots[17] = 17; //no default 
+		*/	
+				//Cleared Bindings
+			for(int i = 0; i < 99; i++)
+			{
+				slots[i] = 98; //no default 
+			}
+		
+	}
+	
+	//Gui Toggle
+	override void consoleProcess(ConsoleEvent event)
+	{
+	//console.printf("toggleUI");
+		if (event.name == "INV_Open")
+		{
+			//ToggleUI = !ToggleUI;
+			//console.printf("toggleUI ACTIVATE");
+		}
+	//console.printf("ToggleUI = %.2f",ToggleUI);
+	}
+
+	ui void convertCVARs()
+	{
+	//	cToggleUI = CVar.GetCvar('GZGUI_ToggleUI', pi);
+	//	ToggleUI = cPreset.GetBool();
+		cPreset = CVar.GetCvar('GZGUI_preset', pi);
+		preset = cPreset.GetInt();
+		cCustom = CVar.GetCvar('GZGUI_custom', pi);
+		Custom = cCustom.GetBool();		
+		cEN_Background = CVar.GetCvar('GZGUI_EN_Background', pi);
+		EN_Background = cEN_Background.GetBool();		
+		cEN_BlankCells = CVar.GetCvar('GZGUI_EN_BlankCells', pi);
+		EN_BlankCells = cEN_BlankCells.GetBool();		
+		cSEL_Bag = CVar.GetCvar('GZGUI_SEL_Bag', pi);
+		SEL_Bag = cSEL_Bag.GetInt();
+		cCursor_Size = CVar.GetCvar('GZGUI_Cursor_Size', pi);
+		Cursor_Size = cCursor_Size.GetInt();	
+		//Inventory
+		cP_InvEn = CVar.GetCvar('GZGUI_P_InvEn', pi);
+		P_InvEn = cP_InvEn.GetInt();	
+		cP_InvEnAV = CVar.GetCvar('GZGUI_P_InvEnAV', pi);
+		P_InvEnAV = cP_InvEnAV.GetInt();	
+		cP_InvCol = CVar.GetCvar('GZGUI_P_InvCol', pi);
+		P_InvCol = cP_InvCol.GetInt();		
+		cP_InvRow = CVar.GetCvar('GZGUI_P_InvRow', pi);
+		P_InvRow = cP_InvRow.GetInt();		
+		cP_InvX = CVar.GetCvar('GZGUI_P_InvX', pi);
+		P_InvX = cP_InvX.GetInt();		
+		cP_InvY = CVar.GetCvar('GZGUI_P_InvY', pi);
+		P_InvY = cP_InvY.GetInt();
+		cP_InvOrder = CVar.GetCvar('GZGUI_P_InvOrder', pi);
+		P_InvOrder = cP_InvOrder.GetInt();	
+		cP_InvCellX = CVar.GetCvar('GZGUI_P_InvCellX', pi);
+		P_InvCellX = cP_InvCellX.GetInt();		
+		cP_InvCellY = CVar.GetCvar('GZGUI_P_InvCellY', pi);
+		P_InvCellY = cP_InvCellY.GetInt();
+		cP_InvMargin = CVar.GetCvar('GZGUI_P_InvMargin', pi);
+		P_InvMargin = cP_InvMargin.GetInt();
+		//Weapons
+		cP_WeapEn = CVar.GetCvar('GZGUI_P_WeapEn', pi);
+		P_WeapEn = cP_WeapEn.GetInt();		
+		cP_WeapEnAV = CVar.GetCvar('GZGUI_P_WeapEnAV', pi);
+		P_WeapEnAV = cP_WeapEnAV.GetInt();
+		cP_WeapCol = CVar.GetCvar('GZGUI_P_WeapCol', pi);
+		P_WeapCol = cP_WeapCol.GetInt();		
+		cP_WeapRow = CVar.GetCvar('GZGUI_P_WeapRow', pi);
+		P_WeapRow = cP_WeapRow.GetInt();		
+		cP_WeapX = CVar.GetCvar('GZGUI_P_WeapX', pi);
+		P_WeapX = cP_WeapX.GetInt();		
+		cP_WeapY = CVar.GetCvar('GZGUI_P_WeapY', pi);
+		P_WeapY = cP_WeapY.GetInt();
+		cP_WeapOrder = CVar.GetCvar('GZGUI_P_WeapOrder', pi);
+		P_WeapOrder = cP_WeapOrder.GetInt();	
+		cP_WeapCellX = CVar.GetCvar('GZGUI_P_WeapCellX', pi);
+		P_WeapCellX = cP_WeapCellX.GetInt();		
+		cP_WeapCellY = CVar.GetCvar('GZGUI_P_WeapCellY', pi);
+		P_WeapCellY = cP_WeapCellY.GetInt();
+		cP_WeapMargin = CVar.GetCvar('GZGUI_P_WeapMargin', pi);
+		P_WeapMargin = cP_WeapMargin.GetInt();
+		//Weapon Slots
+		cP_SlotEn = CVar.GetCvar('GZGUI_P_SlotEn', pi);
+		P_SlotEn = cP_SlotEn.GetInt();		
+		cP_SlotEnAV = CVar.GetCvar('GZGUI_P_SlotEnAV', pi);
+		P_SlotEnAV = cP_SlotEnAV.GetInt();
+		cP_SlotCol = CVar.GetCvar('GZGUI_P_SlotCol', pi);
+		P_SlotCol = cP_SlotCol.GetInt();		
+		cP_SlotRow = CVar.GetCvar('GZGUI_P_SlotRow', pi);
+		P_SlotRow = cP_SlotRow.GetInt();
+		cP_SlotX = CVar.GetCvar('GZGUI_P_SlotX', pi);
+		P_SlotX = cP_SlotX.GetInt();
+		cP_SlotY = CVar.GetCvar('GZGUI_P_SlotY', pi);
+		P_SlotY = cP_SlotY.GetInt();
+		cP_SlotOrder = CVar.GetCvar('GZGUI_P_SlotOrder', pi);
+		P_SlotOrder = cP_SlotOrder.GetInt();	
+		cP_SlotCellX = CVar.GetCvar('GZGUI_P_SlotCellX', pi);
+		P_SlotCellX = cP_SlotCellX.GetInt();		
+		cP_SlotCellY = CVar.GetCvar('GZGUI_P_SlotCellY', pi);
+		P_SlotCellY = cP_SlotCellY.GetInt();
+		cP_SlotMargin = CVar.GetCvar('GZGUI_P_SlotMargin', pi);
+		P_SlotMargin = cP_SlotMargin.GetInt();
+		//Combined
+		cP_ComboEn = CVar.GetCvar('GZGUI_P_ComboEn', pi);
+		P_ComboEn = cP_ComboEn.GetInt();	
+		cP_ComboEnAV = CVar.GetCvar('GZGUI_P_ComboEnAV', pi);
+		P_ComboEnAV = cP_ComboEnAV.GetInt();
+		cP_ComboCol = CVar.GetCvar('GZGUI_P_ComboCol', pi);
+		P_ComboCol = cP_ComboCol.GetInt();		
+		cP_ComboRow = CVar.GetCvar('GZGUI_P_ComboRow', pi);
+		P_ComboRow = cP_ComboRow.GetInt();		
+		cP_ComboX = CVar.GetCvar('GZGUI_P_ComboX', pi);
+		P_ComboX = cP_ComboX.GetInt();		
+		cP_ComboY = CVar.GetCvar('GZGUI_P_ComboY', pi);
+		P_ComboY = cP_ComboY.GetInt();
+		cP_ComboCellX = CVar.GetCvar('GZGUI_P_ComboCellX', pi);
+		P_ComboCellX = cP_InvCellX.GetInt();		
+		cP_ComboCellY = CVar.GetCvar('GZGUI_P_ComboCellY', pi);
+		P_ComboCellY = cP_ComboCellY.GetInt();
+		cP_ComboMargin = CVar.GetCvar('GZGUI_P_ComboMargin', pi);
+		P_ComboMargin = cP_ComboMargin.GetInt();
+		//slot data
+	//		ui inventory SlotCache[99];
+//	ui int slots[99];
+	/*	cP_GZGUI_P_Weapon_Slots_0  = CVar.GetCvar('GZGUI_P_Weapon_Slots_0', pi);
+		slots[0] = cP_GZGUI_P_Weapon_Slots_0.GetInt();
+		cP_GZGUI_P_Weapon_Slots_1  = CVar.GetCvar('GZGUI_P_Weapon_Slots_1', pi);
+		slots[1] = cP_GZGUI_P_Weapon_Slots_1.GetInt();
+		cP_GZGUI_P_Weapon_Slots_2  = CVar.GetCvar('GZGUI_P_Weapon_Slots_2', pi);
+		slots[2] = cP_GZGUI_P_Weapon_Slots_2.GetInt();
+		cP_GZGUI_P_Weapon_Slots_3  = CVar.GetCvar('GZGUI_P_Weapon_Slots_3', pi);
+		slots[3] = cP_GZGUI_P_Weapon_Slots_3.GetInt();
+		cP_GZGUI_P_Weapon_Slots_4  = CVar.GetCvar('GZGUI_P_Weapon_Slots_4', pi);
+		slots[4] = cP_GZGUI_P_Weapon_Slots_4.GetInt();
+		cP_GZGUI_P_Weapon_Slots_5  = CVar.GetCvar('GZGUI_P_Weapon_Slots_5', pi);
+		slots[5] = cP_GZGUI_P_Weapon_Slots_5.GetInt();
+		cP_GZGUI_P_Weapon_Slots_6  = CVar.GetCvar('GZGUI_P_Weapon_Slots_6', pi);
+		slots[6] = cP_GZGUI_P_Weapon_Slots_6.GetInt();
+		cP_GZGUI_P_Weapon_Slots_7  = CVar.GetCvar('GZGUI_P_Weapon_Slots_7', pi);
+		slots[7] = cP_GZGUI_P_Weapon_Slots_7.GetInt();
+		cP_GZGUI_P_Weapon_Slots_8  = CVar.GetCvar('GZGUI_P_Weapon_Slots_8', pi);
+		slots[8] = cP_GZGUI_P_Weapon_Slots_8.GetInt();
+		cP_GZGUI_P_Weapon_Slots_9  = CVar.GetCvar('GZGUI_P_Weapon_Slots_9', pi);
+		slots[9] = cP_GZGUI_P_Weapon_Slots_9.GetInt();
+		cP_GZGUI_P_Weapon_Slots_10  = CVar.GetCvar('GZGUI_P_Weapon_Slots_10', pi);
+		slots[10] = cP_GZGUI_P_Weapon_Slots_10.GetInt();
+		cP_GZGUI_P_Weapon_Slots_11  = CVar.GetCvar('GZGUI_P_Weapon_Slots_11', pi);
+		slots[11] = cP_GZGUI_P_Weapon_Slots_11.GetInt();
+		cP_GZGUI_P_Weapon_Slots_12  = CVar.GetCvar('GZGUI_P_Weapon_Slots_12', pi);
+		slots[12] = cP_GZGUI_P_Weapon_Slots_12.GetInt();
+		cP_GZGUI_P_Weapon_Slots_13  = CVar.GetCvar('GZGUI_P_Weapon_Slots_13', pi);
+		slots[13] = cP_GZGUI_P_Weapon_Slots_13.GetInt();
+		cP_GZGUI_P_Weapon_Slots_14  = CVar.GetCvar('GZGUI_P_Weapon_Slots_14', pi);
+		slots[14] = cP_GZGUI_P_Weapon_Slots_14.GetInt();
+		cP_GZGUI_P_Weapon_Slots_15  = CVar.GetCvar('GZGUI_P_Weapon_Slots_15', pi);
+		slots[15] = cP_GZGUI_P_Weapon_Slots_15.GetInt();
+		cP_GZGUI_P_Weapon_Slots_16  = CVar.GetCvar('GZGUI_P_Weapon_Slots_16', pi);
+		slots[16] = cP_GZGUI_P_Weapon_Slots_16.GetInt();
+		cP_GZGUI_P_Weapon_Slots_17  = CVar.GetCvar('GZGUI_P_Weapon_Slots_17', pi);
+		slots[17] = cP_GZGUI_P_Weapon_Slots_17.GetInt();
+		cP_GZGUI_P_Weapon_Slots_18  = CVar.GetCvar('GZGUI_P_Weapon_Slots_18', pi);
+		slots[18] = cP_GZGUI_P_Weapon_Slots_18.GetInt();
+		cP_GZGUI_P_Weapon_Slots_19  = CVar.GetCvar('GZGUI_P_Weapon_Slots_19', pi);
+		slots[19] = cP_GZGUI_P_Weapon_Slots_19.GetInt();
+		cP_GZGUI_P_Weapon_Slot_Name_0  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_0', pi);
+		SlotCache[0] = cP_GZGUI_P_Weapon_Slot_Name_0.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_1  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_1', pi);
+		SlotCache[1] = cP_GZGUI_P_Weapon_Slot_Name_1.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_2  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_2', pi);
+		SlotCache[2] = cP_GZGUI_P_Weapon_Slot_Name_2.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_3  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_3', pi);
+		SlotCache[3] = cP_GZGUI_P_Weapon_Slot_Name_3.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_4  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_4', pi);
+		SlotCache[4] = cP_GZGUI_P_Weapon_Slot_Name_4.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_5  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_5', pi);
+		SlotCache[5] = cP_GZGUI_P_Weapon_Slot_Name_5.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_6  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_6', pi);
+		SlotCache[6] = cP_GZGUI_P_Weapon_Slot_Name_6.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_7  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_7', pi);
+		SlotCache[7] = cP_GZGUI_P_Weapon_Slot_Name_7.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_8  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_8', pi);
+		SlotCache[8] = cP_GZGUI_P_Weapon_Slot_Name_8.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_9  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_9', pi);
+		SlotCache[9] = cP_GZGUI_P_Weapon_Slot_Name_9.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_10  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_10', pi);
+		SlotCache[10] = cP_GZGUI_P_Weapon_Slot_Name_10.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_11  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_11', pi);
+		SlotCache[11] = cP_GZGUI_P_Weapon_Slot_Name_11.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_12  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_12', pi);
+		SlotCache[12] = cP_GZGUI_P_Weapon_Slot_Name_12.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_13  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_13', pi);
+		SlotCache[13] = cP_GZGUI_P_Weapon_Slot_Name_13.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_14  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_14', pi);
+		SlotCache[14] = cP_GZGUI_P_Weapon_Slot_Name_14.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_15  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_15', pi);
+		SlotCache[15] = cP_GZGUI_P_Weapon_Slot_Name_15.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_16  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_16', pi);
+		SlotCache[16] = cP_GZGUI_P_Weapon_Slot_Name_16.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_17  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_17', pi);
+		SlotCache[17] = cP_GZGUI_P_Weapon_Slot_Name_17.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_18  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_18', pi);
+		SlotCache[18] = cP_GZGUI_P_Weapon_Slot_Name_18.GetString();
+		cP_GZGUI_P_Weapon_Slot_Name_19  = CVar.GetCvar('GZGUI_P_Weapon_Slot_Name_19', pi);
+		SlotCache[19] = cP_GZGUI_P_Weapon_Slot_Name_19.GetString();*/
+	
+	}
+
+	ui int getItemsNumber()
+	{
+		let item   = players[consolePlayer].mo.inv;
+		int result = 0;
+		while (item != NULL)
+		{
+			result += item.bInvBar;
+			item = item.inv;
+		}
+		return result;
+	}	
+			
+	ui int getItemsIndex()
+	{
+		let item   = p.invsel;
+		int result = getItemsNumber() + 1;
+		while (item != NULL)
+		{
+			result -= item.bInvBar;
+			item = item.inv;
+		}
+		return result;
+	}
+	
+	ui int InvSize()
+	{
+		let item   = p.invFirst; 
+		int result = getItemsNumber() + 1;
+		
+		if(item != NULL) 
+		{
+			while (item == pi.mo.invFirst)
+			{
+				result -= item.bInvBar;
+				item = item.inv;
+			}
+			return result;
+		}
+		else
+		{
+			return 0;
+		}
+			
+	}
+	
+	ui void DrawWeapons(PlayerInfo CPlayer, int x, int y)
+	{
+		int k,j ;
+		// And now everything in the weapon slots back to front
+		for (k = p.NUM_WEAPON_SLOTS - 1; k >= 0; k--) for(j = CPlayer.weapons.SlotSize(k) - 1; j >= 0; j--)
+		{
+			let weap = CPlayer.weapons.GetWeapon(k, j);
+			if (weap) 
+			{
+				let weapitem = Weapon(CPlayer.mo.FindInventory(weap));
+				if (weapitem) 
+				{
+				//	DrawOneWeapon(CPlayer, x, y, weapitem);
+					Screen.DrawTexture(baseStatusBar.getInventoryIcon(weapitem ,BaseStatusBar.DI_ALTICONFIRST), false, x+(k*125), y-(j*50), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, 75, DTA_DestHeight, 35);
+					
+				}
+			}
+		}
+	}
+	
+	ui void inventorycache()//puts item in array for easy manipulation
+	{
+		bool type;
+		int index;
+		//StatusBar.ValidateInvFirst(InvSize()) =
+		let rover = players[consolePlayer].mo.inv;//pi.mo.invFirst;
+		
+		int i = 0;
+		int j = 0;
+		int x = 0;
+		
+		if(rover!=NULL)
+		{				
+			for(i = 0; i < 99 && rover; rover = rover.NextInv())
+			{	
+				if((rover.amount > 0) && (rover.binvbar == True) && (rover != NULL))
+				{
+					//iconCache[i] = rover.icon;
+					//iconCache[i] = (BaseStatusBar.getInventoryIcon(rover, BaseStatusBar.DI_ALTICONFIRST));
+					iconCache[i] = (BaseStatusBar.getInventoryIcon(rover, BaseStatusBar.DI_ALTICONFIRST));
+					invCache[i] = rover;
+					i++;		
+				}			
+		/*		if(invCache[i] == invCache[i + 1])
+				{	
+					invCache[i + 1] = Null;
+				}		
+				if(invCache[0] == invCache[1])
+				{
+					//invCache[0] = Null;
+					invCache[1] = Null;
+				}		
+				if(invCache[i] != Null)
+					{
+					//	//console.printf("%s",invCache[i].GetClassName());
+					}*/
+			}					
+		}
+		if(rover==null)
+		{
+			invCache[i] = Null;
+		}
+		if(players[consolePlayer].mo.invsel == null)
+		{
+			invCache[0] = null;
+		}
+	}
+	
+	ui void Weaponcache()//puts Weapons in array for easy manipulation
+	{
+		int tw;
+		int tq;
+		int index = 0;
+		
+		//IconWeapCache[i] = StatusBar.GetInventoryIcon(pi.ReadyWeapon, StatusBar.DI_ALTICONFIRST);
+		
+		for(int tw = 1; Tw <= 9; tw++)
+		{
+			for(int tq = 0; tq <= 9; tq++)
+			{	
+				if(pi.mo.FindInventory(pi.weapons.GetWeapon(tw, tq)) != Null)
+				{
+					WeapCache[index] = Weapon(pi.mo.FindInventory(pi.weapons.GetWeapon(tw, tq)));
+					IconWeapCache[index] = BaseStatusBar.GetInventoryIcon(WeapCache[index], BaseStatusBar.DI_ALTICONFIRST);
+				////console.printf(" WeaponCache, %.2f ,%.2s" ,index ,WeapCache[index].getclassname());
+				//index++;	
+				index++;
+				}
+				else
+				{
+					WeapCache[index] = null;
+			//		IconWeapCache[index] = null;
+				////console.printf(" WeaponCache, %.2f ,%.2s" ,index ,WeapCache[index].getclassname());
+								
+				}
+				//index++;
+			}
+		}	
+	}		
+	
+	ui void FillSlotcache()//puts Weapons in array for easy manipulation
+	{
+		int tw;
+		int tq;
+		int index = 0;
+		for(int tw = 9; Tw <= 9; tw++) //fixme?
+		{
+			for(int tq = 0; tq <= 9; tq++)
+			{	
+				if(pi.mo.FindInventory(pi.weapons.GetWeapon(tw, tq)) != Null )
+				{
+					SlotCache[index] = Weapon(pi.mo.FindInventory(pi.weapons.GetWeapon(tw, tq)));
+					index++;				
+				}
+						
+			}
+		}	
+	}	
+	
+	ui bool IsWeaponEquiped(int Weapon)
+	{
+		int i = 0;
+		do
+		{
+			if(slots[i] == weapon)
+			{
+				return True;
+			}
+			i++;
+		}
+		while(i < 98)
+		
+		return false;
+	}
+	
+	ui void clearSlot(int weapon)
+	{
+		int i = 0;
+		do
+		{
+			i++;
+			if(slots[i] == weapon)
+			{
+				slots[i] = 98;
+			}
+
+		}
+		while(i < 98)
+
+	}
+	
+	ui bool IsWeaponSlotEquiped()
+	{
+	
+		for(int i = 0; i < 99; i++)
+		{
+			if(slots[i] != 98) //no default 
+			{
+				return true;
+			}
+		}
+		return false;
+	
+	}
+	
+/*	ui int findNextActiveWeaponSlot(int weapon)
+	{
+		int active_slot = weapon;
+	//	console.printf("%.2f,%.2f",slotNumb,weapon);
+		int num_slots = (P_SlotCellX) * (P_SlotCellY) -1;
+		console.printf("up");
+		do
+		{
+			//string texname2 = texman.GetName(baseStatusBar.getInventoryIcon(Weapon(SlotCache[slotNumb]) ,BaseStatusBar.DI_ALTICONFIRST));
+			//screen.DrawText(BIGFONT, Font.CR_YELLOW, posx+(i*CellWidth)+25, posy+(j*CellHeight)+15, texname2, DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+			//console.printf("base function Slot # %.2f, = %.2f",slotNumb, slots[slotNumb]);
+		//	console.printf("findNextActiveWeaponSlot %.2f,%.2f,%.2s",slotNumb,slots[slotNumb],texname2);
+		console.printf("end of base Slot # %.2f, = %.2f",active_slot, slots[active_slot]);
+			active_slot++;
+			
+			if(active_slot == 98 && active_slot != num_slots - 1) //reset counter
+			{
+				console.printf(" start of re-run Slot # %.2f, = %.2f",active_slot, slotcache[active_slot]);
+				active_slot = 0;
+				do
+				{
+				console.printf("end of base Slot # %.2f, = %.2f",active_slot, slots[active_slot]);
+					//console.printf("re-run Slot # %.2f, = %.2f",slotNumb, slots[slotNumb]);
+					if(active_slot == 98 && active_slot != num_slots)
+					{
+						//console.printf("End re-run Slot # %.2f, = %.2f",slotNumb, slots[slotNumb]);
+						return weapon;
+					}
+					//slotNumb++;
+					
+					
+				}
+				while(slots[active_slot] == 98 && active_slot != num_slots - 1 && active_slot != weapon)
+								console.printf("end of re-run");
+				//console.printf(%.2f , slotCache[index].getclassname());
+				string texname2 = texman.GetName(baseStatusBar.getInventoryIcon(Weapon(SlotCache[active_slot]) ,BaseStatusBar.DI_ALTICONFIRST));
+				console.printf(texname2);
+				active_slot++;
+				console.printf("return re-run Slot # %.2f, = %.2f",active_slot, slots[active_slot]);
+
+						return active_slot;
+			}
+			
+		}
+		while(slots[active_slot] == 98 && active_slot != num_slots - 1)
+				console.printf("end of first run");
+		//slotNumb++;
+		console.printf("end of base Slot # %.2f, = %.2f",active_slot, slots[active_slot]);
+		string texname2 = texman.GetName(baseStatusBar.getInventoryIcon(Weapon(SlotCache[active_slot]) ,BaseStatusBar.DI_ALTICONFIRST));
+		console.printf(texname2);
+
+		return active_slot;
+		
+	}*/
+	
+	ui int findPreviousActiveWeaponSlot(int weapon)
+	{
+		int slotNumb;
+		slotNumb = weapon--;
+		console.printf("findPreviousActiveWeaponSlot %.2f,%.2f",slotNumb,weapon);
+		
+		
+		
+		return SlotNumb;
+		
+	}
+	
+		ui void drawSingleCell(textureID tex, int CellX, int Celly, int CellWidth, int CellHeight, float alpha)
+		{
+			int texHeight;
+			double tempHeight;
+			int texWidth;
+			double tempWidth;
+			//int a;
+			double aspectRatio;
+			double CellRatio;
+			string texname = texman.GetName(tex);
+			[tempWidth, tempHeight] = texman.Getsize(tex); 
+			//tempHeight = texman.CheckRealHeight(tex);
+			//tempWidth = texman.CheckRealWidth(tex);
+			aspectRatio = (tempWidth / tempHeight);
+			CellRatio = (CellWidth / CellHeight);
+			//aspectRatio = aspectRatio * 1.333333333;
+			
+			
+			
+		/*	if(tempWidth == tempHeight && CellWidth == CellHeight) 
+			{
+				//console.printf("aspectRatio == CellRatio");
+				texWidth = CellWidth;
+				texHeight = CellHeight;
+				////console.printf("equal");
+			}*/
+			//console.printf(texname);
+			//console.printf("%.2f,%.2f,%.2f",tempWidth,tempHeight,aspectRatio);
+			if(aspectRatio == 1)
+			//console.printf("aspectRatio == 1");
+			{
+				if(tempWidth == tempHeight)
+				{
+					texWidth = CellWidth;
+					texHeight = CellHeight;
+				}
+			
+				if(tempWidth >= tempHeight)
+				{
+					texWidth = CellWidth;
+					texHeight = (texWidth / aspectRatio);
+				}
+				
+				if(tempWidth < tempHeight)
+				{ 
+					texHeight = CellHeight;
+					texWidth = texHeight * aspectRatio;
+				}
+			}
+		
+			if(aspectRatio > 1)
+			//console.printf("aspectRatio wide");
+			{
+				if(tempWidth == tempHeight)
+				{
+					texWidth = CellWidth;
+					texHeight = CellHeight;
+				}
+				
+				if(tempWidth > tempHeight)
+				{
+					texWidth = CellWidth;
+					texHeight = (texWidth / aspectRatio);
+				}
+				
+				if(tempWidth < tempHeight)
+				{ 
+					texHeight = CellHeight;
+					texWidth = texHeight * aspectRatio;
+				}
+			}
+
+			if(aspectRatio < 1)
+			//console.printf("aspectRatio narrow");
+			{
+				if(tempWidth == tempHeight)
+				{
+					texWidth = CellWidth;
+					texHeight = CellHeight;
+				}
+			
+				if(tempWidth >= tempHeight)
+				{
+					texWidth = CellWidth;
+					texHeight = (texWidth / aspectRatio);
+				}
+				
+				if(tempWidth < tempHeight)
+				{ 
+					texHeight = CellHeight;
+					texWidth = texHeight * aspectRatio;
+				}
+			}
+			//texHeight = tempHeight;
+			//texWidth = tempWidth;
+			
+			////console.printf("texwidth %.2f,texheight %.2f,aspect ratio %.2d,cell ratio %.2d",texWidth,texHeight,aspectRatio,CellRatio);
+			Screen.DrawTexture(tex, false, CellX, Celly, DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, texWidth, DTA_DestHeight, texHeight, DTA_Alpha, alpha, DTA_CenterOffset, DTA_CenterBottomOffset);
+		}
+	
+		ui void drawInfoBox(int posX, int posY, inventory cache, int sel)
+		{		
+			array <String> DataLines;
+
+			if((hover == true || weaphover == true || slothover == true) && dragging == false && Cache != null && toggleUI == TRUE)
+			{
+				//screen.DrawText(BIGFONT, 4, x+(Cursor_size/2), y+(Cursor_size/2), Cache.getdamage(), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+				name itemname = Cache.getclassname();
+				String ItemData = getItemData(itemname);
+				ItemData.split(DataLines, "nextln ");
+				
+				screen.DrawText(CONFONT, 4, x+(Cursor_size/2), y+(Cursor_size/2), Cache.getclassname(), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+				
+				if(getItemData(Cache.getclassname()).length() > 0)
+				{
+					screen.DrawText(CONFONT, 4, x+(Cursor_size/2), y+(Cursor_size/2)+15, DataLines[0], DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+					screen.DrawText(CONFONT, 4, x+(Cursor_size/2), y+(Cursor_size/2)+30, DataLines[1], DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+				}
+			}		
+		}
+		
+		ui String GetItemData(name itemName)
+		{
+			String ItemData;
+			switch(itemName)
+			{
+				/*case 'Name':
+						ItemData = "\cgDamage:#\c- \ckDPS:#\c- nextln \cd'Description'\c-";
+				break;*/
+			
+				case 'Fist':
+						ItemData = "\cgDamage:2-20\c- \ckDPS:4-41\c- nextln \cd'Your Fist'\c-";
+				break;
+				//berzerk stats
+				//case 'Fist':
+				//		ItemData = "\cgDamage:20-200\c- \ckDPS:40-410\c- nextln \cd'Your Fist'\c-";
+				//break;
+				case 'Chainsaw':
+						ItemData = "\cgDamage:2-12\c- \ckDPS:17.5-105\c- nextln \cd'This used to cut trees now it cuts flesh'\c-";
+				break;
+				case 'Pistol':
+						ItemData = "\cgDamage:5-15\c- \ckDPS:12.5-37.5\c- nextln \cd'A Standard issue Berretta 92fs'\c-";
+				break;
+				case 'Shotgun':
+						ItemData = "\cgDamage:35-105\c- \ckDPS:33-99\c- nextln \cd'A full choke pump shotgun surprisingly accurate'\c-";
+				break;
+				case 'SuperShotgun':
+						ItemData = "\cgDamage:100-300\c- \ckDPS:61-184\c- nextln \cd'Someone welded the triggers now it blasts 2 shells with every trigger pull'\c-";
+				break;
+				case 'Chaingun':
+						ItemData = "\cgDamage:5-15\c- \ckDPS:43.75-131.25\c- nextln \cd'Advanced P.C.C.G. Pistol Calibre Chain Gun, a sholderable bullet hose'\c-";
+				break;
+				case 'RocketLauncher':
+						ItemData = "\cgDamage:148-288\c- \ckDPS:259-509\c- nextln \cd'An Autoloading Rocket Launcher with a high fire rate'\c-";
+				break;
+				case 'PlasmaRifle':
+						ItemData = "\cgDamage:5-40\c- \ckDPS:58-466\c- nextln \cd'High energy and high rate of fire'\c-";
+				break;
+				case 'BFG9000':
+						ItemData = "\cgDamage:100-800\c- \ckDPS:87.5-700\c- nextln \cd'Canned Death'\c-";
+				break;
+				
+			}	
+			return ItemData;
+				
+		}
+	
+		ui void drawCell(int posX, int posY, string label, int columnsX, int rowsY, int CellWidth, int CellHeight, int MarginX, int MarginY, int type, int order, Bool Background_toggle, Bool Blank_Cell_Toggle)
+		{		
+			int view = columnsX * rowsY;
+			int CellColumnsX;
+			int CellRowsY;
+			////console.printf("%.2f", view);
+			int i = 0;
+			int j = 0;
+			int CellX;
+			int CellY;	
+			int index;
+			bool DrawHold = false;
+			inventory CellCache[99];			
+			TextureID CellCache2[99];			
+			active = texman.checkfortexture("invsel",0);
+			toggled = texman.checkfortexture("toggled",0);
+			Inactive = texman.checkfortexture("inactive",0);
+			Background = texman.checkfortexture("bag",0);
+
+			//draw background first
+			if(Background_toggle == TRUE)
+			{
+				//still glitchy
+				//Screen.DrawTexture(background, false, posx-50, posy-37, DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, columnsX*CellWidth, DTA_DestHeight, RowsY*CellHeight);
+				switch(order)
+				{
+					case 1://horizontal
+						Screen.DrawTexture(background, false, posx-((CellWidth)/2), posy-((CellHeight)/2), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, columnsX*CellWidth, DTA_DestHeight, RowsY*CellHeight);	
+					break;
+		
+					case 2://vertical					
+						Screen.DrawTexture(background, false, posx-((CellWidth)/2), posy-((CellHeight)/2), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, RowsY*CellWidth, DTA_DestHeight, columnsX*CellHeight);
+					break;
+				}
+			}
+			
+			switch(order)
+			{				
+				case 1://horizontal
+				CellColumnsX = columnsX;
+				CellRowsY = rowsY;	
+				CellX = columnsX;
+				CellY = rowsY;
+				
+				break;
+					
+				case 2://vertical
+				CellColumnsX = rowsY;		
+				CellRowsY = columnsX;	
+			    CellX = rowsY;
+			    CellY = columnsX;
+				
+				break;
+			}
+			
+			
+			//data type selection
+			switch(type)
+			{				
+				case 1://inventory
+				hover = false;
+				//screen.DrawText(BIGFONT, Font.CR_ORANGE, posx-25, posy-45, "INVETORY ITEMS", DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+				for(i = 0; i < 99; i++)
+				{	
+					CellCache[i] = invCache[i];		
+					CellCache2[i] = BaseStatusBar.getInventoryIcon(invCache[i] ,BaseStatusBar.DI_ALTICONFIRST);		
+				}
+		//		CellX = columnsX;
+		//		CellY = rowsY;		
+				break;
+				
+				case 2://weapons
+				weaphover = false;
+				//screen.DrawText(BIGFONT, Font.CR_ORANGE, posx-25, posy-45, "WEAPONS", DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+				for(i = 0; i < 99; i++)
+				{	
+					CellCache[i] = weapcache[i];							
+					CellCache2[i] = BaseStatusBar.getInventoryIcon(WeapCache[i] ,BaseStatusBar.DI_ALTICONFIRST);	
+				}
+		//		CellX = columnsX;
+		//		CellY = rowsY;
+				break;
+				
+				case 3://weapon slots
+				slothover = false;
+				//screen.DrawText(BIGFONT, Font.CR_ORANGE, posx-25, posy-45, "WEAPON SLOTS", DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+				for(i = 0; i < 99; i++)
+				{						
+					CellCache[i] = weapCache[slots[i]];							
+					CellCache2[i] = BaseStatusBar.getInventoryIcon(Weapon(weapCache[slots[i]]) ,BaseStatusBar.DI_ALTICONFIRST);
+				}
+		//		CellX = columnsX;
+		//		CellY = rowsY;
+				break;			
+			}
+			
+			if(ContextToggle == false) //dropdown flags
+			{
+				invDropDownHold = false;
+				weapinvDropDownHold = false;
+			}
+			
+			for(i = 0; (i <= CellX) ; i++)
+			{						
+				weapsel = index;
+				
+				if(CellX != i && CellY != j && Blank_Cell_Toggle == TRUE)// draw toggled
+				{
+					Screen.DrawTexture(Toggled, false, posx+(i*CellWidth), posy+(j*CellHeight), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, CellWidth-MarginX, DTA_DestHeight, CellHeight-MarginY, DTA_Alpha, 0.2, DTA_CenterOffset, DTA_CenterBottomOffset);	
+				}
+			
+				if(CellX != i && CellY != j)
+				{
+
+					
+
+					if(type == 3)//Weapon slot numbers
+					{
+						if(j == 0 && order == 1) //Horizontal 
+						{
+							screen.DrawText(BIGFONT, Font.CR_YELLOW, posx+(i*CellWidth)+25, posy+(j*CellHeight)-25, string.format("%g",i+1), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+						}
+						if(i == 0 && order == 2) //vertical
+						{
+							screen.DrawText(BIGFONT, Font.CR_YELLOW, posx+(i*CellWidth)+25, posy+(j*CellHeight)-25, string.format("%g",j+1), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+						}	
+					}
+				
+					
+				
+					if(CellCache[index] != NULL) // Fill unselected icons and tiles
+					{
+					
+					
+
+						if(type == 2 && CellCache[index] != NULL)// show ammo ammounts
+						{
+							//int q = basestatusbar.GetCurrentAmmo(CellCache[index]);
+							//screen.DrawText(BIGFONT, Font.CR_YELLOW, posx+(i*100)+25, posy+(j*75)+15, string.format("%f",CellCache[index].ammotype1.amount), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+						}
+						
+						//fill icons
+						drawSingleCell(CellCache2[index], posx+(i*CellWidth), posy+(j*CellHeight), CellWidth-marginX, CellHeight-marginY,  .3);
+						
+						if(type == 2 && IsWeaponEquiped(index) == True)
+						{
+							screen.DrawText(BIGFONT, Font.CR_YELLOW, posx+(i*CellWidth)+25, posy+(j*CellHeight)+15, "E", DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+							
+						}
+						
+						if(type == 3)
+						{
+							
+							
+					//		string texname2 = texman.GetName(baseStatusBar.getInventoryIcon(Weapon(SlotCache[index]) ,BaseStatusBar.DI_ALTICONFIRST));
+					//	screen.DrawText(BIGFONT, Font.CR_YELLOW, posx+(i*CellWidth)+25, posy+(j*CellHeight)+15, texname2, DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+						int slotNumb;
+					
+						if(order == 2)//vertical draw order
+						{
+							//slotNumb = index % ColumnsX;
+							slotNumb = (index / RowsY) + 1;
+						}
+						if(order == 1)//Horizontal draw order
+						{
+							//slotNumb = index % RowsY;
+							slotNumb = (index / ColumnsX) + 1;
+						}
+					
+					
+					//	screen.DrawText(BIGFONT, Font.CR_YELLOW, posx+(i*CellWidth)+25, posy+(j*CellHeight)+15, string.format("%g",slotNumb), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+						
+						//console.printf("slot# %.2f",Weapon(SlotCache[DragSel]));
+						//console.printf("AAAAAAA");
+					//	console.printf("slot# %.2f",CellCache2[index].getclassname());
+						}
+						
+						
+						
+					}
+					
+					if(CellCache[index] == p.invsel && Type == 1 && invSize() != 0 && toggleUI == TRUE) // highlight selected (active inventory) icons
+					{
+						
+						drawSingleCell(CellCache2[index], posx+(i*CellWidth), posy+(j*CellHeight), CellWidth-marginX, CellHeight-marginY,  1);
+						Screen.DrawTexture(active, false, posx+(i*CellWidth), posy+(j*CellHeight), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, CellWidth, DTA_DestHeight, CellHeight,DTA_CenterOffset, DTA_CenterBottomOffset, DTA_FillColor, 0xffffff);
+					}	
+					
+					if(type == 1 && invCache[index] != null)// only need item ammount when dealing with inventory
+					{
+						screen.DrawText(BIGFONT, Font.CR_YELLOW, posx+(i*CellWidth)+(CellWidth/4), posy+(j*CellHeight)+(CellHeight/5), string.format("%g",CellCache[index].amount), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+
+					}
+					
+					if(weapcache[index] == pi.ReadyWeapon && Type == 2) //hilghlight active weapon 
+					{
+						
+						drawSingleCell(CellCache2[index], posx+(i*CellWidth), posy+(j*CellHeight), CellWidth-marginX, CellHeight-marginY, 1);
+						Screen.DrawTexture(active, false, posx+(i*CellWidth), posy+(j*CellHeight), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, CellWidth, DTA_DestHeight, CellHeight,DTA_CenterOffset, DTA_CenterBottomOffset, DTA_FillColor, 0xffffff);
+					}
+					
+					if(weapcache[slots[index]] == pi.ReadyWeapon && Type == 3) //hilghlight active weapon 
+					{
+						
+						drawSingleCell(CellCache2[index], posx+(i*CellWidth), posy+(j*CellHeight), CellWidth-marginX, CellHeight-marginY, 1);
+						Screen.DrawTexture(active, false, posx+(i*CellWidth), posy+(j*CellHeight), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, CellWidth, DTA_DestHeight, CellHeight,DTA_CenterOffset, DTA_CenterBottomOffset, DTA_FillColor, 0xffffff);
+					}
+				}
+			
+				if((posx + (i * CellWidth) - (1 + (CellWidth/2) - (MarginX/2))) <= x && x <= (posx + (i * CellWidth) + (1 + (CellWidth/2) - (MarginX/2))) 
+				&& (posy + (j * CellHeight) - (1 + (CellHeight/2) - (MarginY/2))) <= y && y <= (posy + (j * CellHeight) + (1 + (CellHeight/2) - (MarginY/2))) 
+				&& CellX != i && CellY != j)//position hover toggle
+				{	
+				
+					if(type == 1 && cellcache[index] != Null && invcache[index] != Null && invSize() != 0)//inventory
+					{
+						Hover = true;
+					}
+					
+					if(type == 2 && cellcache[weapsel] != null)//weapons
+					{
+						weapHover = true;
+						
+						if(hold == true && WeapHover == True)
+						{
+							if(CacheWeapon == True)
+							{
+								DragSel = weapSel;
+							}
+							CacheWeapon = False;
+						}								
+					}
+						
+					if(type == 3 && (cellcache[index] != NULL || hold == true))//weapon slots
+					{
+						slotHover = true;
+						slotsel = index;
+						//console.printf("slot# %.2f",slotcache[index]);
+					}
+					
+					if(Dragging == true && type == 3) // draws weapon to slot when dragging
+					{			
+						string texname = texman.GetName(baseStatusBar.getInventoryIcon(Weapon(SlotCache[DragSel]) ,BaseStatusBar.DI_ALTICONFIRST));
+						//screen.DrawText(BIGFONT, Font.CR_YELLOW, posx+(i*CellWidth)+25, posy+(j*CellHeight)+15, string.format("%g",texname, DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+						//console.printf("slot# %.2f",Weapon(SlotCache[DragSel]));
+						console.printf(texname);
+						drawSingleCell(baseStatusBar.getInventoryIcon(Weapon(SlotCache[DragSel]) ,BaseStatusBar.DI_ALTICONFIRST), posx+(i*100), posy+(j*75), CellWidth, CellHeight,  1);
+					}
+
+					if(contextToggle == True && (hover == true || weapHover == true || slotHover == true))
+					{
+						DropSel = sel;
+					}
+					
+					if(contextToggle == True && (hover == true || weapHover == true || slotHover == true))
+					{
+						contexttoggle = false;
+					}
+					
+					if(contexttoggle == false && toggleUI == TRUE)//Highlight on Hover
+					{
+						drawSingleCell(CellCache2[index], posx+(i*CellWidth), posy+(j*CellHeight), CellWidth-marginX, CellHeight-marginY,  1);
+						//drawSingleCell(CellCache2[index], posx+(i*CellWidth), posy+(j*CellHeight), CellWidth, CellHeight, 1);
+						sel = index;  
+						DrawHold = true;
+						
+					}
+					
+					
+					if(type == 1 && invCache[index] != null)// only need item ammount when dealing with inventory
+					{
+						screen.DrawText(BIGFONT, Font.CR_YELLOW, posx+(i*CellWidth)+(CellWidth/4), posy+(j*CellHeight)+(CellHeight/5), string.format("%g",CellCache[index].amount), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+
+					}
+					if(type == 3 && slotcache[index] != null)// show slot number
+					{
+						console.printf("slot# %.2s",slotcache[index]);
+						screen.DrawText(BIGFONT, Font.CR_YELLOW, posx+(i*CellWidth)+25, posy+(j*CellHeight)+15, string.format("%s",slotcache[index]), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+						
+					}
+					
+					drawInfoBox(X, Y, CellCache[sel], sel);
+				}
+				
+				
+				if(CellCache[index] == p.invsel && Type == 1 && invSize() != 0 && index <= (rowsy)) // highlight selected (active inventory) icons
+					{
+						
+						drawSingleCell(CellCache2[index], posx+(i*CellWidth), posy+(j*CellHeight), CellWidth-marginX, CellHeight-marginY,  1);
+						Screen.DrawTexture(active, false, posx+(i*CellWidth), posy+(j*CellHeight), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, CellWidth, DTA_DestHeight, CellHeight,DTA_CenterOffset, DTA_CenterBottomOffset, DTA_FillColor, 0xffffff);
+						screen.DrawText(BIGFONT, Font.CR_YELLOW, posx+(i*CellWidth)+(CellWidth/4), posy+(j*CellHeight)+(CellHeight/5), string.format("%g",CellCache[index].amount), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+						//screen.DrawText(BIGFONT, Font.CR_YELLOW, posx+(i*CellWidth)+25, posy+(j*CellHeight)+15, string.format("%g",CellCache[index].amount), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+						
+						
+					}	
+				
+				//what order we want cells drawn to screen
+				switch(order)
+				{	
+					case 1:// Draws Cells left -> right then top -> down
+						if(i >= CellX -1  && CellY >= 1 && CellY != j && i != CellX) 
+						{
+							if(j <= CellY && j != CellY)
+							{
+								j++;
+								i = -1;
+							}	
+						}
+					break;				
+					
+					case 2: // Draws Cells top -> down then left -> right 						
+						if(j != CellY)
+						{
+							i--;
+							j++;
+						}
+						if(j == CellY)
+						{							
+							i++;
+							j = 0;	
+						}
+					break;						
+				}
+				
+
+				if(DrawHold == TRUE && Dragging == false && CellCache[sel] != NULL) // hover text
+				{
+					//screen.DrawText(BIGFONT, 4, x+(Cursor_size/2), y+(Cursor_size/2), GetItemData(CellCache[sel].getclassname()), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+				//	screen.DrawText(BIGFONT, 4, x+(Cursor_size/2), y+(Cursor_size/2), CellCache[sel].getclassname(), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+					dropsel = sel;
+				}
+				
+				if(contextToggle == TRUE && CellCache[DropSel] == CellCache[index] && invDropDownHold == true) // highligts dropdown selection
+				{
+					drawSingleCell(CellCache2[dropsel], posx+(i*CellWidth), posy+(j*CellHeight), CellWidth, CellHeight, 1);
+				}
+				
+				index++;		
+				
+			}
+					
+			//draws label last
+			if(label != "")
+			{
+				screen.DrawText(BIGFONT, Font.CR_ORANGE, posx-25, posy-45, label, DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+			}
+			else
+			{
+				switch(type)
+				{	
+					case 1:// Inventory Label
+						screen.DrawText(BIGFONT, Font.CR_ORANGE, posx-25, posy-45, "INVENTORY ITEMS", DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);		
+					break;
+					case 2:// Weapon Label
+						screen.DrawText(BIGFONT, Font.CR_ORANGE, posx-25, posy-45, "WEAPONS", DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);		
+					break;		
+					case 3:// Slots Label
+						screen.DrawText(BIGFONT, Font.CR_ORANGE, posx-25, posy-45, "WEAPON SLOTS", DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);	
+					break;		
+				
+				}
+			}
+			
+		}	
+	
+		ui void drawHud(int posX, int posY, int type, int columnsX, int rowsY)
+		{
+		
+		}
+	
+	
+		ui void drawMouse()
+		{
+		if(toggleUI == TRUE)
+		{
+		//self.RequireMouse = true;
+		//	mouseEvent();
+		//	//console.printf("hold %.2f",hold);
+			if(Weaphover == false && hover == false && SlotHover == false && hold == false)
+			{
+			
+			//cursor = texman.checkfortexture("arrow",0);
+			Cursor = texman.checkfortexture("cursor",0);
+			Screen.DrawTexture(cursor, false, x, y,DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, Cursor_size, DTA_DestHeight, Cursor_size);
+			
+			}
+			if((WeapHover == True || SlotHover == True || hover == True ) && hold == false)
+			{
+				HoverCursor = texman.checkfortexture("cursor",0);//texman.checkfortexture("Finger",0);
+				Screen.DrawTexture(HoverCursor, false, x, y,DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, Cursor_size, DTA_DestHeight, Cursor_size);
+
+			}
+			
+			if(hold == true)
+			{
+			
+				HoldCursor = texman.checkfortexture("cursor",0);//texman.checkfortexture("hand",0);
+
+				if(WeapHover == True || CacheWeapon == False  || CacheSlot == False)
+				{
+					//Screen.DrawTexture(baseStatusBar.getInventoryIcon(weapCache[DragSel] ,BaseStatusBar.DI_ALTICONFIRST), false, x-10, y+30,DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, 100, DTA_DestHeight, 40);
+					drawSingleCell(baseStatusBar.getInventoryIcon(weapCache[DragSel] ,BaseStatusBar.DI_ALTICONFIRST), x, y, P_WeapCellX, P_WeapCellY, 1);
+					Dragging = true;
+					screen.DrawText(BIGFONT, 4, x+(Cursor_size/2), y+(Cursor_size/2), weapCache[DragSel].getclassname(), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+				}
+				if(WeapHover == True || SlotHover == True || CacheWeapon == False || CacheSlot == False)
+				{
+					drawSingleCell(baseStatusBar.getInventoryIcon(weapCache[DragSel] ,BaseStatusBar.DI_ALTICONFIRST), x, y, P_WeapCellX, P_WeapCellY, 1);
+					Dragging = true;
+				}							
+				if(SlotHover == True || CacheWeapon == False  || CacheSlot == False)
+				{
+					drawSingleCell(baseStatusBar.getInventoryIcon(slotCache[DragSel] ,BaseStatusBar.DI_ALTICONFIRST), x, y, P_SlotCellX, P_SlotCellY, 1);
+					Dragging = true;
+				}
+				
+				Screen.DrawTexture(HoldCursor, false, x, y,DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, Cursor_size, DTA_DestHeight, Cursor_size);
+				
+				
+			}
+			
+		}
+		
+		}
+
+		ui void drawDropdown(int xloc, int yloc)
+		{
+			inactive = texman.checkfortexture("inactive",0);
+			toggled = texman.checkfortexture("toggled",0);
+			
+			use = False;
+			Drop = False;
+		
+			textureid Box1 = toggled;
+			textureid Box2 = toggled;
+			textureid Box3 = toggled;
+			
+			int Black = Font.CR_BLACK;
+			int Red = Font.CR_RED;
+			
+			int str1 = Black;
+			int str2 = Black;
+			int str3 = Black;
+			
+			xhold = xloc;
+			yhold = yloc;
+			//Screen.DrawTexture(inactive, false, xloc, yloc+52,DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, 164, DTA_DestHeight, 32);
+			
+			//HudFont = Font.FindFont("HUDFONT_DOOM");
+			HUDFont mHUDFont;
+			HUDFont mIndexFont;
+			HUDFont mAmountFont;
+	
+			int status;
+			//int yM[] = 0, 0, 36, 72;
+			
+			
+
+			if(hover == true && weaphover == false && ContextToggle == true)
+			{
+				invDropDownHold = true;
+			}
+			
+			
+			//Draw inventory dropdown
+			if(invDropDownHold == true && ContextToggle == true)
+			{
+				//invDropDownHold = true; 
+				if((xloc <= x && x <= xloc + 200) && (yloc <= y && y <= yloc + 48))
+				{	
+					status = 1;
+					use = True;
+					Drop = False;
+					hover = true;
+					weaphover = false;
+				}
+				else if((xloc <= x && x <= xloc + 200) && (yloc <= y && y <= yloc + 48 + 48))
+				{	
+					status = 2;
+					use = False;
+					Drop = True;
+					hover = true;			
+					weaphover = false;			
+				}
+				else
+				{		
+					status = 0;
+					use = False;
+					Drop = False;
+					hover = true;
+					weaphover = false;
+				}
+				
+				
+				switch(status)
+				{
+				
+					case 0:
+					Box1 = toggled;
+					Box2 = toggled;
+					str1 = Black;
+					str2 = Black;	
+					break;
+				
+					case 1:
+					Box1 = inactive;
+					Box2 = toggled;
+					str1 = Red;
+					str2 = Black;	
+					break;
+					
+					case 2: 
+					Box1 = toggled;
+					Box2 = inactive;
+					str1 = Black;
+					str2 = Red;	
+					break;
+				
+				
+				}
+				Screen.DrawTexture(Box1, false, xloc, yloc,DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, 200, DTA_DestHeight, 48);
+				screen.DrawText(bigfont, str1, xloc+10, yloc+10, "Use", DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+				
+				Screen.DrawTexture(Box2, false, xloc, yloc+48,DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, 200, DTA_DestHeight, 48);
+				screen.DrawText(bigfont, str2, xloc+10, yloc+48+10, "Drop", DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+						
+			}
+			
+			
+			if(weaphover == true && hover == false && ContextToggle == true)
+			{
+				weapinvDropDownHold = true;
+			}
+			
+			// Draws weapon dropdown
+			if(weapinvDropDownHold == true && ContextToggle == true)
+			{
+				if((xloc <= x && x <= xloc + 200) && (yloc <= y && y <= yloc + 48))
+				{	
+					status = 1;
+					Equip = True;
+					weapDrop = False;
+					weaphover = true;
+					hover = false;
+				}
+				else if((xloc <= x && x <= xloc + 200) && (yloc <= y && y <= yloc + 48 + 48))
+				{	
+					status = 2;
+					Equip = False;
+					weapDrop = True;
+					weapHover = true;			
+					weapHover = false;			
+				}
+				else
+				{		
+					status = 0;
+					Equip = False;
+					weapDrop = False;
+					weaphover = true;
+					hover = false;
+				}
+				
+				
+				switch(status)
+				{
+				
+					case 0:
+					Box1 = toggled;
+					Box2 = toggled;
+					str1 = Black;
+					str2 = Black;
+					break;
+				
+					case 1:
+					Box1 = inactive;
+					Box2 = toggled;
+					str1 = Red;
+					str2 = Black;
+					break;
+					
+					case 2: 
+					Box1 = toggled;
+					Box2 = inactive;
+					str1 = Black;
+					str2 = Red;
+					break;
+				
+				
+				}
+				Screen.DrawTexture(Box1, false, xloc, yloc,DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, 200, DTA_DestHeight, 48);
+				screen.DrawText(bigfont, str1, xloc+10, yloc+10, "Equip", DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+				
+				Screen.DrawTexture(Box2, false, xloc, yloc+48,DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, 200, DTA_DestHeight, 48);
+				screen.DrawText(bigfont, str2, xloc+10, yloc+48+10, "Drop", DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720);
+	
+					
+						{
+						
+			}
+				
+			}
+		
+		}
+		
+		ui void drawdebug(int xloc, int yloc)
+		{
+			int list = 0;
+	//		screen.DrawText(smallfont, 4, xloc+10, yloc+10, "dropdown values", DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+			
+	/*		screen.DrawText(smallfont, 4, xloc+10, yloc+(25), string.format("hover"), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+			screen.DrawText(smallfont, 4, xloc+10, yloc+(50), string.format("%g",hover), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+			screen.DrawText(smallfont, 4, xloc+10, yloc+(75), string.format("context toggle"), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+			screen.DrawText(smallfont, 4, xloc+10, yloc+(100), string.format("%g",contexttoggle), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+			screen.DrawText(smallfont, 4, xloc+10, yloc+(125), string.format("weap hover"), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+			screen.DrawText(smallfont, 4, xloc+10, yloc+(150), string.format("%g",weaphover), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+			screen.DrawText(smallfont, 4, xloc+10, yloc+(175), string.format("drop down hold"), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+			screen.DrawText(smallfont, 4, xloc+10, yloc+(200), string.format("%g",invDropDownHold), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+			screen.DrawText(smallfont, 4, xloc+10, yloc+(225), string.format("weapinvDropDownHold"), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+			screen.DrawText(smallfont, 4, xloc+10, yloc+(250), string.format("%g",weapinvDropDownHold), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+	*/		
+			for(int index = 0; index < 99; index++)
+			{
+				
+				screen.DrawText(smallfont, 4, xloc+10, yloc+(25*index), string.format("%g",index), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+				
+				screen.DrawText(smallfont, 4, xloc+100, yloc+(25*index), string.format("%g",slots[index]), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+				
+				if(weapCache[(slots[index])] != Null )
+				{
+					//console.printf("SwitchWeap:%s",weapCache[(slots[currentWeapon])].GetClassName());
+					screen.DrawText(smallfont, 4, xloc+230, yloc+(25*index), weapCache[(slots[index])].getclassname(), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+					//screen.DrawText(smallfont, 4, xloc+180, yloc+(25*index), string.format("%g",index), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32); 
+				}
+				else
+				{
+					screen.DrawText(smallfont, 4, xloc+230, yloc+(25*index),"Empty", DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+				}
+				
+				if(slotCache[index] != Null )
+				{
+					//console.printf("SwitchWeap:%s",weapCache[(slots[currentWeapon])].GetClassName());
+					screen.DrawText(smallfont, 4, xloc+230, yloc+(25*index), slotCache[index].getclassname(), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+					screen.DrawText(smallfont, 4, xloc+180, yloc+(25*index), string.format("%g",index), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+				list++; 
+				}
+			}
+	/*		
+			bool type;
+			int index;
+			let rover2= players[consolePlayer].mo.inv;//pi.mo.invFirst;
+			int i = 0;
+			int j = 0;
+			int x = 0;
+			
+			if(rover2!=NULL)
+			{				
+				for(index = 0; index < invSize() && rover2; rover2 = rover2.NextInv())
+				{	
+					if(rover2 != NULL)
+					{
+						iconCache[i] = rover2.icon;
+						iconCache[i] = (BaseStatusBar.getInventoryIcon(rover2, BaseStatusBar.DI_ALTICONFIRST));
+						screen.DrawText(smallfont, 4, xloc+230, yloc+(25*index), invcache[index].getclassname(), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+						screen.DrawText(smallfont, 4, xloc+150, yloc+(25*index), string.format("%g",invcache[index].amount), DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_CellX, 40, DTA_CellY, 32);
+						invCache[i] = rover2;
+						index++;		
+					}										
+				}					
+			}
+			
+			
+			*/
+			
+			
+		}
+/*
+
+	int SEL_Bag;
+
+	int P_ComboEn;
+	int P_ComboCol;
+	int P_ComboRow;
+	int P_ComboX;
+	int P_ComboY;
+*/
+override void Renderoverlay(RenderEvent e)
+		{
+			if(initialized == false)
+			init();
+			if(initialized == true)
+			{
+			convertCVARs();
+			inventorycache();
+			WeaponCache();
+			//fillSlotCache();
+			//drawdebug(30, 60);
+
+			//DrawWeapons(pi, 100, 700);
+			
+			if(Custom == TRUE)
+			{
+				if(P_InvEn == TRUE && P_InvEnAV == TRUE)
+				{
+					drawCell(P_InvX,P_InvY,"",P_InvCol,P_InvRow,P_InvCellX,P_InvCellY,P_InvMargin,P_InvMargin,1,P_InvOrder,EN_Background,EN_BlankCells);
+				}
+				
+				if(P_WeapEn == TRUE && P_WeapEnAV == TRUE)
+				{
+					drawCell(P_WeapX,P_WeapY,"",P_WeapCol,P_WeapRow,P_WeapCellX,P_WeapCellY,P_WeapMargin,P_WeapMargin,2,P_WeapOrder,EN_Background,EN_BlankCells);
+				}
+				
+				if(P_SlotEn == TRUE && P_SlotEnAV == TRUE)
+				{
+					drawCell(P_SlotX,P_SlotY,"",P_SlotCol,P_SlotRow,P_SlotCellX,P_SlotCellY,P_SlotMargin,P_SlotMargin,3,P_SlotOrder,EN_Background,EN_BlankCells);
+				}
+			}
+			
+				if(ToggleUI == true)
+				{	
+					
+					if(Custom == TRUE)
+					{
+						if(P_InvEn == TRUE)
+						{
+							drawCell(P_InvX,P_InvY,"",P_InvCol,P_InvRow,P_InvCellX,P_InvCellY,P_InvMargin,P_InvMargin,1,P_InvOrder,EN_Background,EN_BlankCells);
+						}
+						
+						if(P_WeapEn == TRUE)
+						{
+							drawCell(P_WeapX,P_WeapY,"",P_WeapCol,P_WeapRow,P_WeapCellX,P_WeapCellY,P_WeapMargin,P_WeapMargin,2,P_WeapOrder,EN_Background,EN_BlankCells);
+						}
+						
+						if(P_SlotEn == TRUE)
+						{
+							drawCell(P_SlotX,P_SlotY,"",P_SlotCol,P_SlotRow,P_SlotCellX,P_SlotCellY,P_SlotMargin,P_SlotMargin,3,P_SlotOrder,EN_Background,EN_BlankCells);
+						}
+					}
+					
+					if(Custom == FALSE)
+					{
+									
+						switch(preset)
+						{	
+							case 1://General Preset
+								drawCell(300,200,"",7,2,100,75,15,15,3,1,TRUE,TRUE);
+								drawCell(200,400, "",4,3,100,75,15,15,2,1,TRUE,TRUE);
+								drawCell(700,400, "",4,3,100,75,15,15,1,1,TRUE,TRUE);
+								////console.printf("%d",preset);
+							break;				
+							
+							case 2://Classic fallout ui Preset
+								Screen.DrawTexture(background2, false, 100, 50, DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, 1024, DTA_DestHeight, 600);
+								drawCell(250,150, "",2,6,100,75,40,25,1,1,False,False);
+							break;	
+
+							case 3://MR Friendly Preset
+								Screen.DrawTexture(background3, false, 50, 0, DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, 1920, DTA_DestHeight, 720);
+								drawCell(310,265, "",7,4,100,75,40,25,1,1,False,False);
+							break;	
+							
+							case 4://Diablo Preset
+								Screen.DrawTexture(background4, false, 1135, 150, DTA_VirtualWidth, 1280, DTA_VirtualHeight, 720, DTA_DestWidth, 400, DTA_DestHeight, 352);
+								drawCell(1121,386, "",10,4,36,28,1,1,1,1,False,False);
+							break;
+
+						}
+					
+					}
+
+					
+					//drawdebug(30, 60);
+					if(contextToggle == true)
+					{
+						drawdropdown(xhold, yhold);
+					}
+					
+					DrawMouse();
+					
+				}
+			}
+		}
+		
+		override void RenderUnderlay(RenderEvent e)
+		{
+			if(initialized == false)
+			init();
+			if(initialized == true)
+			{
+					
+				if(ToggleUI == true)
+				{
+				//	drawMultipleCells(700,400,1,4,3);
+				//	drawMultipleCells(200,400,2,4,3);
+				//	drawMultipleCells(300,200,3,7,2);
+					
+					//drawCell(100,100,1,12,6);
+					//drawdebug(30, 60);		
+					
+				}
+			
+			}
+
+		}
+		
+	
+	override bool UiProcess(UiEvent e)
+		{
+			return true;
+		}
+		
+		override bool InputProcess(InputEvent e)
+		{
+		
+		if(initialized == false)
+		return false;
+		////console.printf("%.2f",hover);
+			////console.printf("%.2f, %.2f",e.MouseX ,e.MouseY);
+			////console.printf("%.2f, %.2f",X ,Y);
+			int toggleDelay;
+			
+
+			//Bool DoubleDelay;
+			int left;
+			int right;
+			int back;
+			int forward;
+			int click;
+			int altclick;
+			//int altclick2;
+			int invToggle;
+			//int zoom;
+			int i;
+			int up;
+			int down;
+			int Shift;
+			int Slot1;
+			int Slot2;
+			int Slot3;
+			int Slot4;
+			int Slot5;
+			int Slot6;
+			int Slot7;
+			int Slot8;
+			int Slot9;
+			int Slot10;
+			
+			
+			//[ToggleInventory, i] = Bindings.GetKeysForCommand("+user1");
+			[left, i] = Bindings.GetKeysForCommand("+moveleft");
+			[right, i] = Bindings.GetKeysForCommand("+moveright");
+			[forward, i] = Bindings.GetKeysForCommand("+forward");
+			[back, i] = Bindings.GetKeysForCommand("+back");
+			[click, i] = Bindings.GetKeysForCommand("+attack");
+			[altclick, i] = Bindings.GetKeysForCommand("+altattack");
+			//[altclick2, i] = Bindings.GetKeysForCommand("+zoom");
+			//[invToggle, i] = Bindings.GetKeysForCommand("+INV_Open");
+			[invToggle, i] = Bindings.GetKeysForCommand("+ToggleInventory");
+			
+			if(toggleUI == TRUE)
+			{
+				x += e.MouseX;
+				y -= e.MouseY;
+				//level.SetFrozen(true);
+			}
+			else{
+				//level.SetFrozen(false);
+			}
+			
+			[up, i] = Bindings.GetKeysForCommand("weapprev");
+			[down, i] = Bindings.GetKeysForCommand("weapnext");
+			[shift, i] = Bindings.GetKeysForCommand("+speed");
+			
+			[Slot1, i] = Bindings.GetKeysForCommand("slot 1");
+			[Slot2, i] = Bindings.GetKeysForCommand("slot 2");
+			[Slot3, i] = Bindings.GetKeysForCommand("slot 3");
+			[Slot4, i] = Bindings.GetKeysForCommand("slot 4");
+			[Slot5, i] = Bindings.GetKeysForCommand("slot 5");
+			[Slot6, i] = Bindings.GetKeysForCommand("slot 6");
+			[Slot7, i] = Bindings.GetKeysForCommand("slot 7");
+			[Slot8, i] = Bindings.GetKeysForCommand("slot 8");
+			[Slot9, i] = Bindings.GetKeysForCommand("slot 9");
+			[Slot10, i] = Bindings.GetKeysForCommand("slot 10");
+			
+
+		//	if(clickDelay <= level.maptime+17)
+		//	{
+			//	DoubleClick == False;
+		//		//console.printf("%.2f",DoubleClick);
+		//		//console.printf("%.2i",level.maptime);	
+			//}
+			//if(level.maptime >= clickDelay+17)
+			//{
+			
+				//DoubleDelay = true;
+			//console.printf("clickDelay %.2f",clickDelay);
+			//console.printf("DoubleClick base %.2f",DoubleClick);
+			//console.printf("breakDoubleClick base %.2f",breakDoubleClick);
+			//}
+	/*		if(breakDoubleClick == true)
+			{
+				DoubleClick = false;
+				console.printf("DoubleClick if(breakDoubleClick == true) %.2f",DoubleClick);
+				console.printf("breakDoubleClick if(breakDoubleClick == true) %.2f",breakDoubleClick);
+			}*/
+			
+	/*		if(breakDoubleClick == True && level.maptime >= clickDelay+50)
+			//if(level.maptime <= clickDelay+17 )  // double click
+					{
+						BreakDoubleClick = False;
+					//	DoubleDelay = false;
+					//	//console.printf("%.2f",clickDelay);
+					//	//console.printf("%.2f",clickDelay+17);
+					console.printf("DoubleClick break clause %.2f",DoubleClick);
+					console.printf("breakDoubleClick break clause %.2f",breakDoubleClick);
+					}*/
+	/*		console.printf("time %.2f",level.maptime);
+			console.printf("clickDelay %.2f",clickDelay);
+			console.printf("DoubleClick general %.2f",DoubleClick);
+			console.printf("breakDoubleClick general %.2f",breakDoubleClick);*/
+			
+			if(clickDelay <= level.maptime+10 && DoubleClick == true && BreakDoubleClick == true)
+			{
+				BreakDoubleClick = true;
+				DoubleClick = false;
+			}
+
+			
+			if(level.maptime <= clickDelay+10 && BreakDoubleClick == False)
+			//if(level.maptime <= clickDelay+17 )  // double click
+					{
+				//	if()
+				//	{
+						DoubleClick = true;
+					//	console.printf("DoubleClick active1 %.2f",DoubleClick);
+					//	console.printf("breakDoubleClick active1 %.2f",breakDoubleClick);
+				//	}
+						//breakDoubleClick = false;
+					//	DoubleDelay = false;
+					//	//console.printf("%.2f",clickDelay);
+					//	//console.printf("%.2f",clickDelay+17);
+					//console.printf("DoubleClick active2 %.2f",DoubleClick);
+					//console.printf("breakDoubleClick active2 %.2f",breakDoubleClick);
+					}
+			
+			if(level.maptime >= clickDelay+10)
+			//if(level.maptime <= clickDelay+17 )  // double click
+					{
+						DoubleClick = false;
+						BreakDoubleClick = false;
+					//	console.printf("DoubleClick expire %.2f",DoubleClick);
+					//	console.printf("breakDoubleClick expire %.2f",breakDoubleClick);
+						//BreakDoubleClick = True;
+					//	DoubleDelay = false;
+					//	//console.printf("%.2f",clickDelay);
+					//	//console.printf("%.2f",clickDelay+17);
+					}
+			////console.printf("%.2f", activeWeaponSlot);
+		//	int weap = 0;
+		//	while(weapCache[weap] != pi.ReadyWeapon)
+		//	{
+		//		weap++;
+		//	}
+		//	activeWeaponSlot = weap;
+			/*if ( e.Type == InputEvent.Type_KeyDown && !ToggleUI)
+			{
+				if(e.KeyScan == invToggle)
+				{	
+				console.printf("bazinga 2");
+				ToggleUI = TRUE;
+				console.printf("%.2f",ToggleUI);
+				}
+				
+			}*/
+			if ( e.Type == InputEvent.Type_KeyDown)
+			{
+				
+				if(e.KeyScan == invToggle && !ToggleUI) //&& level.maptime >= toggleDelay
+					{	
+					//console.printf("bazinga all"); 
+						
+						if(level.maptime > toggleDelay)
+						{
+						//console.printf("bazinga now");
+							toggleDelay = level.maptime+100;
+						//	console.printf("bazinga on");
+						//	console.printf("toggle delay %.2f",toggleDelay);
+						//	console.printf("level maptime %.2f",level.maptime);
+							ToggleUI = !ToggleUI;
+						//	console.printf("ToggleUI = %.2f",ToggleUI);
+						}
+				
+					}
+
+				if(e.KeyScan == invToggle && ToggleUI) //&& level.maptime >= toggleDelay
+					{	
+					//console.printf("bazinga all"); 
+						
+						if(level.maptime > toggleDelay)
+						{
+						//console.printf("bazinga now");
+							toggleDelay = level.maptime+100;
+					//		console.printf("bazinga off");
+					//		console.printf("toggle delay %.2f",toggleDelay);
+					//		console.printf("level maptime %.2f",level.maptime);
+							ToggleUI = !ToggleUI;
+					//		console.printf("ToggleUI = %.2f",ToggleUI);
+						}
+				
+					}	
+					
+			}		
+
+			if ( e.Type == InputEvent.Type_Mouse && ToggleUI)
+			{
+
+				x = max(-215, min(1495, x));
+				y = max(0, min(720, y));
+				return true;
+			}	
+				
+			
+			if(e.Type == InputEvent.Type_KeyDown && ToggleUI)
+			{
+			
+				if(e.KeyScan == invToggle)
+				{	
+				//console.printf("bazinga off");
+				//ToggleUI = !ToggleUI;
+			
+				}
+				
+				if(e.KeyScan == click && ToggleUI == true)
+				{	
+					
+					if(contextToggle == true && Use == True)
+					{
+						string item;
+						item.appendformat("UseInv:%s", invCache[dropsel].GetClassName());
+						EventHandler.SendNetworkEvent(item);
+						//EventHandler.SendNetworkEvent("UseInv", dropsel);
+					//	//console.printf("%.2f",dropsel);
+						contextToggle = false;
+						
+		
+					}
+						//console.printf("DoubleClick click1 %.2f",DoubleClick);
+						//console.printf("breakDoubleClick click1 %.2f",breakDoubleClick);
+					if(DoubleClick == true && BreakDoubleClick == false) // double click
+					{
+						//console.printf("DoubleClick click2 %.2f",DoubleClick);
+						//console.printf("breakDoubleClick click2 %.2f",breakDoubleClick);
+						string item;
+						item.appendformat("UseInv:%s", invCache[dropsel].GetClassName());
+						EventHandler.SendNetworkEvent(item);
+						
+						EventHandler.SendNetworkEvent("UseInv", dropsel);
+						console.printf("%s", invCache[dropsel].getClassname());
+						console.printf("%.2f",dropsel);
+						//console.printf("Doubleclick");
+						DoubleClick = false;
+						BreakDoubleClick = True;
+						//console.printf("DoubleClick click3 %.2f",DoubleClick);
+						//console.printf("breakDoubleClick click3 %.2f",breakDoubleClick);
+		
+					}
+					
+				/*	if(level.maptime <= clickDelay+17  && hover == true)  
+					{
+					
+						if(DoubleClick == false)
+						{
+					//		DoubleClick = true;
+							////console.printf("%.2f",clickDelay);
+						}
+						if(DoubleClick == true)
+						{
+							DoubleClick == false;
+						}
+					}*/
+					
+					if(contextToggle == true && drop == True)
+					{
+						
+						clickDelay = level.maptime+10;
+						string item;
+						item.appendformat("DropInv:%s",invCache[dropsel].GetClassName());
+						EventHandler.SendNetworkEvent(item);
+						
+						//EventHandler.SendNetworkEvent("DropInv", dropsel);
+						//console.printf("%.2f",dropsel);
+						contextToggle = false;
+						
+		
+					}
+
+					if(contextToggle == false && hover == true && DoubleClick == false)
+					{	
+						if(clickDelay < level.maptime+50)
+						{
+							clickDelay = level.maptime;
+						}
+						//console.printf("DoubleClick delay %.2f",DoubleClick);
+						//console.printf("breakDoubleClick delay %.2f",breakDoubleClick);
+					//	//console.printf("%.2i",clickDelay);
+						////console.printf("click");
+						while(invCache[sel] != p.invsel)
+						{
+							////console.printf("click");
+							p.invNext();
+						
+						}
+					
+					}
+					
+					if(contextToggle == false && weaphover == true)
+					{	
+						
+						//while(invCache[sel] != p.invsel)
+						//{
+						//	//console.printf("click");
+						//	p.invNext();
+						
+						//}
+					
+					}
+					
+					if(hover == true)
+					{
+						hold == False;
+					}
+					if(weaphover == true  && hold == False)
+					{
+						CacheWeapon = True;
+						Hold = !hold;	
+					}
+					if(Slothover == true && hold == False)
+					{
+						CacheSlot = True;
+						Hold = !hold;	
+					}
+					if(slotHover == true && hold == True)
+					{	
+						Hold = !hold;	
+					}
+					if(dragging == True && SlotHover == True)
+					{
+						slots[slotSel] = dragSel;
+						dragging = false;		
+					}
+					hold == False;
+					
+					
+				return true;			
+						
+				}
+				
+				if(e.KeyScan == Shift && ToggleUI == true)
+				{
+					if(hover == true)
+					{
+						hold == False;
+					}
+					if(weaphover == true  && hold == False)
+					{
+						CacheWeapon = True;
+						Hold = !hold;	
+					}
+					if(Slothover == true && hold == False)
+					{
+						CacheSlot = True;
+						Hold = !hold;	
+					}
+					if(slotHover == true && hold == True)
+					{	
+						Hold = !hold;	
+					}
+					if(dragging == True && SlotHover == True)
+					{
+						slots[slotSel] = dragSel;
+						dragging = false;		
+					}
+					hold == False;
+					
+					return true;	
+				}
+				
+			
+				
+				if(e.KeyScan == altclick && hold == True)// deselect held weapon with right click
+				{
+					hold = false;
+					dragging = false;		
+					
+				}
+				
+				
+				if(e.KeyScan == altclick && ToggleUI == true || (hover == true || weapHover == true))
+				{			
+					if(e.KeyScan == altclick && Hover == true)
+					{
+						////console.printf("%.2f", dropsel);
+						
+						////console.printf("%s", invCache[dropsel].getClassname());
+						string item;
+						item.appendformat("DropInv:%s",invCache[dropsel].GetClassName());
+						EventHandler.SendNetworkEvent(item);
+						
+						EventHandler.SendNetworkEvent("DropInv", dropsel);
+						console.printf("%.2f", i);
+						for(i = 0; i > 99; i++)
+						{
+						////console.printf("%.2f", dropsel);
+						////console.printf("%.2f", slots[i]);
+							if(slots[i] = dropsel)
+							{
+								slots[i] = 98;
+							}
+						}
+					}	
+					//remove weapon binding (right click)
+					if(e.KeyScan == altclick && slotHover == true)
+					{
+						
+						////console.printf("empty slot");
+						////console.printf("%.2f", slotsel);
+						slots[slotSel] = 98;
+				
+					}
+					
+					//drop weapon (right click)
+					if(e.KeyScan == altclick && WeapHover == true && dragging == false)
+					{
+
+						////console.printf("drop weapon");
+						////console.printf("%.2f", activeWeaponSlot);
+						////console.printf("%.2f", weapsel);
+						CacheWeapon = true;
+					//	//console.printf("%.2f", dragsel);
+					//	//console.printf("%.2f", slotsel);
+						string weap;
+						clearSlot(dropsel);
+						weap.appendformat("DropWeap:%s",weapCache[dropsel].GetClassName());
+						
+						//EventHandler.SendNetworkEvent("DropWeap");
+						////console.printf(weap);
+						EventHandler.SendNetworkEvent(weap);
+						CacheWeapon = false;
+						
+					/*	for(i = 0; i > 99; i++)
+						{
+						////console.printf("%.2f", dropsel);
+						////console.printf("%.2f", slots[i]);
+							if(slots[i] = dropsel)
+							{
+								slots[i] = 98;
+							}
+						}*/
+						//EventHandler.SendNetworkEvent("DropWeap:fist");
+					//	EventHandler.SendNetworkEvent("giveitem:BFG9000");
+						//weapcache[weapsel] = 0;
+				
+					}
+				
+					if(e.Type == InputEvent.Type_KeyDown && use == true && e.KeyScan == click)
+					{
+						string item;
+						item.appendformat("UseInv:%s",invCache[sel].GetClassName());
+						EventHandler.SendNetworkEvent(item);
+						
+						//EventHandler.SendNetworkEvent("UseInv", sel);
+					}
+					if(e.Type == InputEvent.Type_KeyDown && drop == true && e.KeyScan == click)
+					{
+					
+						string item;
+						item.appendformat("DropInv:%s",invCache[sel].GetClassName());
+						EventHandler.SendNetworkEvent(item);
+						
+						//EventHandler.SendNetworkEvent("DropInv", sel);
+						////console.printf("%.2f",sel);
+						////console.printf("%.2f",invCache[sel].getClassName());
+					}
+				
+					contextToggle = !contextToggle;
+					xHold = x;
+					yHold = y;
+
+					//EventHandler.SendNetworkEvent("UseInv", invCache[sel].getclassname());
+					
+					
+					////console.printf("%.2f,%.2f,%.2f",q,x,y);
+					////console.printf("%.2f",q);
+					
+				return true;			
+						
+				}
+				
+				
+				
+				
+				//////////////////////////////////////////////////////////////////////
+				// captures the rest of the inputs so the player cant move around etc
+				/////////////////////////////////////////////////////////////////////
+				else if(e.KeyScan == left && ToggleUI)
+				{
+					if (ToggleUI)
+					{
+						//EventHandler.SendNetworkEvent("");
+						return true;
+					}
+				}
+				else if(e.KeyScan == right && ToggleUI)
+				{
+					if (ToggleUI)
+					{
+						//EventHandler.SendNetworkEvent("");
+						return true;
+					}p.invnext();
+				}
+				else if(e.KeyScan == back && ToggleUI)
+				{
+					if (ToggleUI)
+					{
+						//EventHandler.SendNetworkEvent("");
+						return true;
+					}
+				}
+				else if(e.KeyScan == forward && ToggleUI)
+				{
+					if (ToggleUI)
+					{
+						//EventHandler.SendNetworkEvent("");
+						return true;
+					}
+				}
+				
+				
+				//////////////////////////////////////////////////////////////////////
+				// allows player to mousewheele through inventory items
+				/////////////////////////////////////////////////////////////////////
+				else if(e.KeyScan == up && ToggleUI)
+				{
+					
+					if (ToggleUI)
+					{
+						p.invprev();
+						invcount++;
+						////console.printf("%.2f",invcount);
+						return true;
+					}
+					
+				}
+				
+				else if(e.KeyScan == down && ToggleUI)
+				{
+					
+					if (ToggleUI)
+					{
+						p.invnext();
+						invcount--;
+						////console.printf("%.2f",invcount);
+						return true;
+					}
+					
+				}
+							
+			}
+			
+			//////////////////////////////////////////////////////////////////////
+			// Overrides the keyboard Weapon slots so they can be rearanged
+			/////////////////////////////////////////////////////////////////////
+		if(P_SlotEn == TRUE)
+		{
+		
+		//adjust based on cvars
+		int SlotKeyNumber = P_SlotCol; 
+		int NumbSlotsWide = P_SlotCol;
+		//int NSlot;
+		
+		switch(P_SlotOrder)
+		{
+			case 1://horizontal
+		//			SlotKeyNumber = P_SlotRow;
+		//			NumbSlotsWide = P_SlotRow;
+			break;
+			
+			case 2://vertical		
+		//			SlotKeyNumber = P_SlotCol;	
+		//			NumbSlotsWide = P_SlotCol;
+			break;					
+		}
+		
+		
+	/*	 int 1/P_SlotCol;
+		ui int P_SlotRow;
+		ui int P_SlotOrder;*/
+		
+			if(e.Type == InputEvent.Type_KeyDown)
+			{
+			
+			//int SlotKeyNumber;
+			
+				if(e.KeyScan == slot1)
+				{	
+				int NSlot = 0;
+				console.printf("%.2f, %.2f",NSlot ,NSlot+NumbSlotsWide);
+			//	SlotKeyNumber = 1/NumbSlotsWide;
+					if(WeapCache[slots[0]] != null || WeapCache[slots[0+NumbSlotsWide]] != null)
+					{
+						string weap;
+						
+						string texname2 = texman.GetName(baseStatusBar.getInventoryIcon(Weapon(SlotCache[activeWeaponSlot]) ,BaseStatusBar.DI_ALTICONFIRST));
+						console.printf(texname2);
+
+						console.printf("call to function Slot # %.2f, = %.2f",activeWeaponSlot, slots[activeWeaponSlot]);
+						//console.printf(findNextActiveWeaponSlot(slots[activeWeaponSlot]).GetClassName());
+
+						if(WeapCache[slots[NSlot]] != null && activeWeaponSlot != NSlot)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[0]].GetClassName());
+							activeWeaponSlot = NSlot;
+							return true;	
+						}		
+		
+						if(WeapCache[slots[NSlot+NumbSlotsWide]] != null && activeWeaponSlot != NSlot+NumbSlotsWide)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot+NumbSlotsWide]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[1]].GetClassName());
+							activeWeaponSlot = NSlot+NumbSlotsWide;
+							return true;	
+						}	
+					}	
+					return true;	
+				}
+			}
+			if(e.Type == InputEvent.Type_KeyDown)
+			{
+				if(e.KeyScan == slot2)
+				{
+				int NSlot = 1;
+				console.printf("%.2f, %.2f",NSlot ,NSlot+NumbSlotsWide);
+					if(WeapCache[slots[1]] != null || WeapCache[slots[1+NumbSlotsWide]] != null)
+					{
+					
+						string weap;
+						
+					
+						
+
+						if(WeapCache[slots[NSlot]] != null && activeWeaponSlot != NSlot)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[0]].GetClassName());
+							activeWeaponSlot = NSlot;
+							return true;	
+						}		
+		
+						if(WeapCache[slots[NSlot+NumbSlotsWide]] != null && activeWeaponSlot != NSlot+NumbSlotsWide)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot+NumbSlotsWide]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[1]].GetClassName());
+							activeWeaponSlot = NSlot+NumbSlotsWide;
+							return true;	
+						}	
+					}
+					return true;	
+				}
+			}
+			if(e.Type == InputEvent.Type_KeyDown)
+			{
+				if(e.KeyScan == slot3)
+				{
+				int NSlot = 2;
+				console.printf("%.2f, %.2f",NSlot ,NSlot+NumbSlotsWide);
+					if(WeapCache[slots[2]] != null || WeapCache[slots[2+NumbSlotsWide]] != null)
+					{
+					
+						string weap;
+						
+					
+						
+
+						if(WeapCache[slots[NSlot]] != null && activeWeaponSlot != NSlot)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[0]].GetClassName());
+							activeWeaponSlot = NSlot;
+							return true;	
+						}		
+		
+						if(WeapCache[slots[NSlot+NumbSlotsWide]] != null && activeWeaponSlot != NSlot+NumbSlotsWide)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot+NumbSlotsWide]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[1]].GetClassName());
+							activeWeaponSlot = NSlot+NumbSlotsWide;
+							return true;	
+						}					
+					}
+					return true;	
+				}
+			}
+			if(e.Type == InputEvent.Type_KeyDown)
+			{
+				if(e.KeyScan == slot4)
+				{
+				int NSlot = 3;
+				console.printf("%.2f, %.2f",NSlot ,NSlot+NumbSlotsWide);
+					if(WeapCache[slots[3]] != null || WeapCache[slots[3+NumbSlotsWide]] != null)
+					{
+					
+						string weap;
+						
+					
+
+
+						if(WeapCache[slots[NSlot]] != null && activeWeaponSlot != NSlot)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[0]].GetClassName());
+							activeWeaponSlot = NSlot;
+							return true;	
+						}		
+		
+						if(WeapCache[slots[NSlot+NumbSlotsWide]] != null && activeWeaponSlot != NSlot+NumbSlotsWide)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot+NumbSlotsWide]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[1]].GetClassName());
+							activeWeaponSlot = NSlot+NumbSlotsWide;
+							return true;	
+						}					
+					}
+					return true;	
+				}
+			}
+			if(e.Type == InputEvent.Type_KeyDown)
+			{
+				if(e.KeyScan == slot5)
+				{
+				int NSlot = 4;
+				console.printf("%.2f, %.2f",NSlot ,NSlot+NumbSlotsWide);
+					if(WeapCache[slots[4]] != null || WeapCache[slots[4+NumbSlotsWide]] != null)
+					{
+					
+						string weap;
+						
+					
+						
+
+						if(WeapCache[slots[NSlot]] != null && activeWeaponSlot != NSlot)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[0]].GetClassName());
+							activeWeaponSlot = NSlot;
+							return true;	
+						}		
+		
+						if(WeapCache[slots[NSlot+NumbSlotsWide]] != null && activeWeaponSlot != NSlot+NumbSlotsWide)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot+NumbSlotsWide]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[1]].GetClassName());
+							activeWeaponSlot = NSlot+NumbSlotsWide;
+							return true;	
+						}					
+					}
+					return true;	
+				}
+			}
+			if(e.Type == InputEvent.Type_KeyDown)
+			{
+				if(e.KeyScan == slot6)
+				{
+				int NSlot = 5;
+					console.printf("%.2f, %.2f",NSlot ,NSlot+NumbSlotsWide);
+					if(WeapCache[slots[5]] != null || WeapCache[slots[5+NumbSlotsWide]] != null)
+					{
+					
+						string weap;
+						
+					
+						
+
+						if(WeapCache[slots[NSlot]] != null && activeWeaponSlot != NSlot)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[0]].GetClassName());
+							activeWeaponSlot = NSlot;
+							return true;	
+						}		
+		
+						if(WeapCache[slots[NSlot+NumbSlotsWide]] != null && activeWeaponSlot != NSlot+NumbSlotsWide)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot+NumbSlotsWide]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[1]].GetClassName());
+							activeWeaponSlot = NSlot+NumbSlotsWide;
+							return true;	
+						}					
+					}
+					return true;	
+				}
+			}
+			if(e.Type == InputEvent.Type_KeyDown)
+			{
+				if(e.KeyScan == slot7)
+				{
+				int NSlot = 6;
+				console.printf("%.2f, %.2f",NSlot ,NSlot+NumbSlotsWide);
+					if(WeapCache[slots[6]] != null || WeapCache[slots[6+NumbSlotsWide]] != null)
+					{
+					
+						
+						string weap;
+						
+					
+						
+
+						if(WeapCache[slots[NSlot]] != null && activeWeaponSlot != NSlot)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[0]].GetClassName());
+							activeWeaponSlot = NSlot;
+							return true;	
+						}		
+		
+						if(WeapCache[slots[NSlot+NumbSlotsWide]] != null && activeWeaponSlot != NSlot+NumbSlotsWide)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot+NumbSlotsWide]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[1]].GetClassName());
+							activeWeaponSlot = NSlot+NumbSlotsWide;
+							return true;	
+						}					
+					}
+					return true;	
+				}
+			}
+			if(e.Type == InputEvent.Type_KeyDown)
+			{
+				if(e.KeyScan == slot8)
+				{
+				int NSlot = 7;
+				console.printf("%.2f, %.2f",NSlot ,NSlot+NumbSlotsWide);
+					if(WeapCache[slots[7]] != null || WeapCache[slots[7+NumbSlotsWide]] != null)
+					{
+					
+						string weap;
+						
+					
+						
+
+						if(WeapCache[slots[NSlot]] != null && activeWeaponSlot != NSlot)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[0]].GetClassName());
+							activeWeaponSlot = NSlot;
+							return true;	
+						}		
+		
+						if(WeapCache[slots[NSlot+NumbSlotsWide]] != null && activeWeaponSlot != NSlot+NumbSlotsWide)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot+NumbSlotsWide]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[1]].GetClassName());
+							activeWeaponSlot = NSlot+NumbSlotsWide;
+							return true;	
+						}					
+					}
+					return true;	
+				}
+			}
+			if(e.Type == InputEvent.Type_KeyDown)
+			{
+				if(e.KeyScan == slot9)
+				{
+				int NSlot = 8;
+				console.printf("%.2f, %.2f",NSlot ,NSlot+NumbSlotsWide);
+					if(WeapCache[slots[8]] != null || WeapCache[slots[8+NumbSlotsWide]] != null)
+					{
+					string weap;
+					
+					
+					
+
+						if(WeapCache[slots[NSlot]] != null && activeWeaponSlot != NSlot)
+						{
+							console.printf("%.2f", NSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[0]].GetClassName());
+							activeWeaponSlot = NSlot;
+							return true;	
+						}		
+		
+						if(WeapCache[slots[NSlot+NumbSlotsWide]] != null && activeWeaponSlot != NSlot+NumbSlotsWide)
+						{
+							console.printf("%.2f", NSlot+NumbSlotsWide);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot+NumbSlotsWide]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[1]].GetClassName());
+							activeWeaponSlot = NSlot+NumbSlotsWide;
+							return true;	
+						}			
+					}
+					return true;	
+				}
+			}
+			if(e.Type == InputEvent.Type_KeyDown)
+			{
+				if(e.KeyScan == slot10)
+				{
+				int NSlot = 9;
+				console.printf("%.2f, %.2f",NSlot ,NSlot+NumbSlotsWide);
+					if(WeapCache[slots[8]] != null || WeapCache[slots[8+NumbSlotsWide]] != null)
+					{
+					string weap;
+					
+
+						if(WeapCache[slots[NSlot]] != null && activeWeaponSlot != NSlot)
+						{
+							console.printf("%.2f", NSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[0]].GetClassName());
+							activeWeaponSlot = NSlot;
+							return true;	
+						}		
+		
+						if(WeapCache[slots[NSlot+NumbSlotsWide]] != null && activeWeaponSlot != NSlot+NumbSlotsWide)
+						{
+							console.printf("%.2f", NSlot+NumbSlotsWide);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot+NumbSlotsWide]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[1]].GetClassName());
+							activeWeaponSlot = NSlot+NumbSlotsWide;
+							return true;	
+						}			
+					}
+					return true;	
+				}
+			}
+			
+				/*		string weap;
+						int NSlot = 8;
+					
+						console.printf("%.2f, %.2f",NSlot ,NSlot+NumbSlotsWide);
+
+						if(WeapCache[slots[NSlot]] != null && activeWeaponSlot != NSlot)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[0]].GetClassName());
+							activeWeaponSlot = NSlot;
+							return true;	
+						}		
+		
+						if(WeapCache[slots[NSlot+NumbSlotsWide]] != null && activeWeaponSlot != NSlot+NumbSlotsWide)
+						{
+							//console.printf("%.2f",activeWeaponSlot);
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[NSlot+NumbSlotsWide]].GetClassName());
+							EventHandler.SendNetworkEvent(weap);
+							//EventHandler.SendNetworkEvent(weapCache[slots[1]].GetClassName());
+							activeWeaponSlot = NSlot+NumbSlotsWide;
+							return true;	
+						}					
+					}
+					return true;	
+				}
+			}*/
+			
+			
+						//////////////////////////////////////////////////////////////////////
+			// Overrides the Mouse Wheele Weapon Select
+			/////////////////////////////////////////////////////////////////////
+			
+			//int scrollList[99] = {1,11,2,12,3,13,4,14,5,15,6,16,7,17,8,18,9,19};
+			
+			if(e.Type == InputEvent.Type_KeyDown)
+			{
+				if(e.KeyScan == up)
+				{
+					string weap;
+					int currentWeapon = activeWeaponSlot;
+					//int localActiveWeaponSlot = activeWeaponSlot;
+					//console.printf("%.2f,%.2f",activeWeaponSlot, currentWeapon);
+					if(IsWeaponSlotEquiped() == true)
+					{
+					//	console.printf("Slot # %.2f, = %.2f",activeWeaponSlot, slots[activeWeaponSlot]);
+					//	if (findNextActiveWeaponSlot(slots[activeWeaponSlot]) != 98)
+					//	{
+					//int currentWeapon = activeWeaponSlot;
+						do 
+						{
+						//console.printf("%.2f,%.2f",activeWeaponSlot, currentWeapon);
+							currentWeapon++;
+						//console.printf("%.2f,%.2f",activeWeaponSlot, currentWeapon);
+						//console.printf("up %.2f, %.2f",currentWeapon, activeWeaponSlot);
+							if(slots[currentWeapon] != 98 && weapCache[(slots[currentWeapon])]!= Null)
+							{
+									//console.printf("up");
+								//	console.printf("call to function Slot # %.2f, = %.2f, %.2f",activeWeaponSlot, slots[activeWeaponSlot], findNextActiveWeaponSlot(slots[activeWeaponSlot]));
+									///	console.printf("slot switch active");
+								//	console.printf("SwitchWeap:%s",weapCache[findNextActiveWeaponSlot(slots[activeWeaponSlot])].GetClassName());
+								//console.printf("%.2f,%.2f",activeWeaponSlot, currentWeapon);
+								console.printf("SwitchWeap:%s",weapCache[(slots[currentWeapon])].GetClassName());
+								//	console.printf("SwitchWeap:%s",slotcache[findNextActiveWeaponSlot(slots[activeWeaponSlot])].GetClassName());
+								
+								weap.appendformat("SwitchWeap:%s",weapCache[(slots[currentWeapon])].GetClassName());
+								EventHandler.SendNetworkEvent(weap);
+								activeWeaponSlot = currentWeapon;
+									
+							//	}
+							}
+							//console.printf("up %.2f, %.2f",currentWeapon, activeWeaponSlot);
+						}
+						while(slots[currentWeapon] == 98 && currentWeapon != 98)//(P_SlotCellX * P_SlotCellY - 1))
+						//console.printf("out of loop");
+					}
+				/*
+					if(slots[activeWeaponSlot] != 0 && activeWeaponSlot != 0)
+					{
+						activeWeaponSlot--;
+					}
+					if(slots[activeWeaponSlot] != 0 && activeWeaponSlot == 0)
+					{
+						activeWeaponSlot = 98;
+						activeWeaponSlot--;
+					}
+					while(slots[activeWeaponSlot] == 0 && activeWeaponSlot != 0)
+					{
+						activeWeaponSlot--;
+					}
+					console.printf("%.2f",activeWeaponSlot);
+					if(slots[activeWeaponSlot] != 0)
+					{
+						
+						if(weapCache[slots[activeWeaponSlot]] != null)
+						{
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[activeWeaponSlot]].GetClassName());
+							console.printf(weap);
+							EventHandler.SendNetworkEvent(weap);
+						}
+					}*/
+					return true;	
+				}
+			}
+			
+			if(e.Type == InputEvent.Type_KeyDown)
+			{
+				if(e.KeyScan == down)
+				{
+					string weap;
+					
+					//findPreviousActiveWeaponSlot();
+					if (findPreviousActiveWeaponSlot(slots[activeWeaponSlot]) != 98 && weapCache[(slots[activeWeaponSlot])].GetClassName() != "")
+					{
+						//weap = weapCache[findNextActiveWeaponSlot(slots[activeWeaponSlot])].GetClassName();
+						console.printf(weap);
+						weap.appendformat("SwitchWeap:%s",weapCache[(slots[activeWeaponSlot])].GetClassName());
+						EventHandler.SendNetworkEvent(weap);
+					}
+			/*		}
+					if(slots[activeWeaponSlot] != 0 && activeWeaponSlot != 98)
+					{
+						activeWeaponSlot++;
+					}
+					if(slots[activeWeaponSlot] != 0 && activeWeaponSlot == 98)
+					{
+						activeWeaponSlot = 0;
+						activeWeaponSlot++;
+					}
+					while(slots[activeWeaponSlot] == 0 && activeWeaponSlot != 98)
+					{
+						activeWeaponSlot++;
+					}
+					console.printf("%.2f",activeWeaponSlot);
+					if(slots[activeWeaponSlot] != 0)
+					{
+						
+						if(weapCache[slots[activeWeaponSlot]] != null)
+						{
+							weap.appendformat("SwitchWeap:%s",weapCache[slots[activeWeaponSlot]].GetClassName());
+							console.printf(weap);
+							EventHandler.SendNetworkEvent(weap);
+						}
+						//EventHandler.SendNetworkEvent(weapCache[slots[activeWeaponSlot]].GetClassName());
+					}*/
+					return true;
+				}
+			}
+		}	
+			
+			
+			
+			
+	/*		
+			else if(e.KeyScan == up)
+				{	
+					if(weapCache[slotSel] != Null)
+					{
+						if(SlotSel = 17)
+						{
+							slotSel = 0;
+							EventHandler.SendNetworkEvent(weapCache[slotSel].GetClassName());
+						}
+						if(SlotSel != 17)
+						{
+							SlotSel++;
+							EventHandler.SendNetworkEvent(weapCache[slotSel].GetClassName());
+						}
+						
+					}
+					SlotSel++;
+					//console.printf("ye");
+					return true;	
+				}
+				
+				else if(e.KeyScan == down)
+				{	
+					if(weapCache[slotSel] != Null && SlotSel != 0)
+					{
+						SlotSel--;
+						EventHandler.SendNetworkEvent(weapCache[slotSel].GetClassName());	
+					}
+					if(weapCache[slotSel] != Null)
+					{
+						if(SlotSel = 0)
+						{
+							slotSel = 16;
+							if(weapCache[16] != Null)
+							{
+								EventHandler.SendNetworkEvent(weapCache[slotSel].GetClassName());
+							}
+						}
+					}
+					//console.printf("aaagh");
+					SlotSel--;
+					return true;	
+				}
+			
+			*/
+			return false;
+		}		
+			
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Network events to communicate bettween UI and PLAY Contexts
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+override void NetworkProcess(ConsoleEvent e)
+	{
+	
+	
+	if (e.IsManual || e.Player < 0 || !PlayerInGame[e.Player] || !(players[e.Player].mo))
+			return;
+
+		let player = players [e.Player].mo;
+		
+		Array<string> command;
+		e.Name.Split (command, ":");
+
+		if(command.Size() == 2 && (command [0] ~== "giveitem"))
+		{
+			player.GiveInventory (command [1], 1);
+		}
+	
+
+	playerpawn p = playerpawn(players[e.Player].mo);
+		
+	if ( level.maptime == 0)
+	{
+		let delay = level.maptime;
+	}
+	bool switchWeapon;
+	bool dropWeapon;
+	
+	
+		let item  = players[consolePlayer].mo.invsel;
+		let itemscan  = players[consolePlayer].mo.invFirst;
+		int i = 0;
+		inventory cache[100];
+	
+	
+		//////////////////////////////////////////////////////////////////////////
+		//Inventory Usage
+		/////////////////////////////////////////////////////////////////////////
+		if(command.Size() == 2 && (command [0] ~== "UseInv"))
+		{
+			inventory Item = p.findInventory(command [1]);
+			p.useinventory(Item);
+		}
+		
+		if(e.Name == "SwInv" && e.Args[0] != 0 && itemscan != NULL && item != NULL)
+		{
+			int delay;
+			
+			//console.printf("switch Inventory");
+			if( level.maptime > delay + 10)
+			{
+				for(i = 1;itemscan != Null; i++)
+				{
+					cache[i] = item;
+					item = item.Nextinv();
+					//p.invnext();
+					if(cache[e.Args[0]] != NULL && (i == e.Args[0]))
+					{				
+						//p.Nextinv();
+						
+						let delay = level.maptime;
+					}	
+					
+				}
+				
+			}
+		}
+		
+		if(command.Size() == 2 && (command [0] ~== "DropInv"))
+		{
+			inventory Item = p.findInventory(command [1]);
+			p.dropInventory(Item,1);
+
+		}
+		
+		///////////////////////////////////////////////////////////////////////
+		//Weapon Network events 
+		///////////////////////////////////////////////////////////////////////
+		if(command.Size() == 2 && (command [0] ~== "DropWeap"))
+		{
+			inventory Dweapon = p.findInventory(command [1]);
+			p.dropInventory(Dweapon,1);
+
+		}
+
+		if(command.Size() == 2 && (command [0] ~== "SwitchWeap"))
+		{
+			p.A_SelectWeapon(command [1]);
+		}	
+	
+	}
+		
+}	
+		
+			
+
+
+

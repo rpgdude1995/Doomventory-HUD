@@ -1,0 +1,8 @@
+Alias +ToggleInventory "event INV_Open"
+//Alias +ToggleInventory ""
+Alias -ToggleInventory ""
+
+//addkeysection "GzdoomGui" keysection
+//addmenukey "$Show Inventory" ToggleInventory //what will be executed
+
+//defaultbind "tab" ToggleInventory

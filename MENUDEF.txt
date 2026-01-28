@@ -1,0 +1,76 @@
+AddOptionMenu OptionsMenu       { Submenu "$GzdoomGUI Options", GZDoomGUI_Options }
+
+OptionMenu GZDoomGUI_Options
+{
+
+  Title "$GzdoomGUI Options"
+  //StaticPatchCentered 0, 0, "Sprites/logo.png"
+  StaticText "Inventory Options"
+  Control     "$Show Inventory" , "+ToggleInventory"
+  StaticText ""
+  //Option "$Inventory Preset", "jgphud_enable", "STD:Fallout"
+ // Control "$JGPHUD_GENERAL_ENABLEHUD_BIND", "toggle jgphud_enable"
+  Slider "$Inventory Preset", "GZGUI_preset", 1, 4, 1, 0
+  StaticText ""
+  Option "$Enable Custom Layout", "GZGUI_Custom", "OnOff"
+  StaticText ""
+  StaticText "General Custom Options"
+  Option "$Toggle Background", "GZGUI_EN_Background", "OnOff"
+  Option "$Toggle Cells", "GZGUI_EN_BlankCells", "OnOff"
+  Slider "Cursor Size", "GZGUI_Cursor_Size", 16, 64, 1, 1 
+  StaticText ""
+  StaticText "Inventory Custom Options"
+  Option "$Enable Inventory", "GZGUI_P_InvEn", "OnOff"
+  Option "Always Visible Inventory", "GZGUI_P_InvEnAV", "OnOff"
+  Slider "$Collums", "GZGUI_P_InvCol", 1, 10, 1, 1
+  Slider "$Rows", "GZGUI_P_InvRow", 1, 8, 1, 1
+  Option "$Draw Order", "GZGUI_P_InvOrder", "DrawOrder"
+  Slider "$Horisontal Location", "GZGUI_P_InvX", -215, 1495, 1, 1
+  Slider "$Vertical Location", "GZGUI_P_InvY", 1, 720, 1, 1
+  Slider "Cell Width", "GZGUI_P_InvCellX", 1, 100, 1, 1
+  Slider "Cell Height", "GZGUI_P_InvCellY", 1, 100, 1, 1
+  Slider "Cell Margin", "GZGUI_P_InvMargin", 1, 25, 1, 1
+  StaticText ""
+  StaticText "Weapon Custom Options"
+  Option "$Enable Weapons", "GZGUI_P_WeapEn", "OnOff"
+  Option "Always Visible Inventory", "GZGUI_P_WeapEnAV", "OnOff"
+  Slider "$Collums", "GZGUI_P_WeapCol", 1, 9, 1, 0
+  Slider "$Rows", "GZGUI_P_WeapRow", 1, 9, 1, 0
+  Option "$Draw Order", "GZGUI_P_WeapOrder", "DrawOrder"
+  Slider "$Horisontal Location", "GZGUI_P_WeapX", -215, 1495, 1, 0
+  Slider "$Vertical Location", "GZGUI_P_WeapY", 1, 720, 1, 0
+  Slider "Cell Width", "GZGUI_P_WeapCellX", 1, 100, 1, 1
+  Slider "Cell Height", "GZGUI_P_WeapCellY", 1, 100, 1, 1
+  Slider "Cell Margin", "GZGUI_P_WeapMargin", 1, 100, 1, 1
+  StaticText ""
+  StaticText "Weapon Slots Custom Options"
+  Option "$Enable Weapon Slots", "GZGUI_P_SlotEn", "OnOff"
+  Option "Always Visible Inventory", "GZGUI_P_SlotEnAV", "OnOff"
+  Slider "$Collums", "GZGUI_P_SlotCol", 1, 10, 1, 1
+  Slider "$Rows", "GZGUI_P_SlotRow", 1, 2, 1, 1
+  Option "$Draw Order", "GZGUI_P_SlotOrder", "DrawOrder"
+  Slider "$Horisontal Location", "GZGUI_P_SlotX", -215, 1495, 1, 0
+  Slider "$Vertical Location", "GZGUI_P_SlotY", 1, 720, 1, 0
+  Slider "Cell Width", "GZGUI_P_SlotCellX", 1, 100, 1, 1
+  Slider "Cell Height", "GZGUI_P_SlotCellY", 1, 100, 1, 1
+  Slider "Cell Margin", "GZGUI_P_SlotMargin", 1, 25, 1, 1
+}
+
+OptionValue "DrawOrder"
+{
+	1, "$Horizontal"
+	2, "$Vertical"
+
+}
+/*
+nosave bool GZGUI_EN_Background = FALSE;
+nosave bool GZGUI_EN_BlankCells = FALSE;
+nosave int GZGUI_SEL_Bag = 0;
+
+
+
+nosave int GZGUI_P_ComboEn = 0;
+nosave int GZGUI_P_ComboCol = 0;
+nosave int GZGUI_P_ComboRow = 0;
+nosave int GZGUI_P_ComboX = 0;
+nosave int GZGUI_P_ComboY = 0;
