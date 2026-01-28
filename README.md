@@ -1,7 +1,7 @@
 <div align="center">
 
 <p align="center">
-  <img src="" alt="Doomventory Hud" width="400">
+  <img src="https://github.com/rpgdude1995/Doomventory-HUD/blob/main/doomventory-hud-logo.png" alt="Doomventory Hud" width="400">
 </p>
 
 </div>
