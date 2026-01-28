@@ -19,5 +19,9 @@ Simply downlaod the .pk3 file from the releases and launch with UZDoom.
 ## Status
 
 Many major issues are still present.
-	- The inventiory function is tied to the statusbar requiring the base inventory bar to be active and visible.
-	- scrolling through weapons does not function as intended based on user selection
+	<p>
+		- The inventiory function is tied to the statusbar requiring the base inventory bar to be active and visible.
+	</p>
+	<p>
+		- scrolling through weapons does not function as intended based on user selection 
+	</p>
