@@ -1,3 +1,3 @@
 version 4.7.0
 
-#include "Doomventory_HUD_Zscript/GzdoomGui Event Handler.txt"
+#include "Doomventory_HUD_Zscript/Doomventory HUD Event Handler.txt"
